@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+{% block title %}Upload song{% endblock %}
+{% block button %}
+  <form action="/loggedout" method="post" class="inline-form">
+    <input type="submit" value="Logout" class="buttons">
+  </form>
+{% endblock %}
+{% block body %}
+<body class="upload-body">
+  <div class="upload">
+    <h1>Upload a song of your choice!</h1>
+    <form method="post" action="" name="upload-form" enctype="multipart/form-data" >
+    <div>
+        <label>Audio file</label>
+        <input type="file" name="audio-file">
+        {% if audioErr is defined %}
+          <p id="error">{{ audioErr }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label> Audio name</label>
+        <input type="text" name="audio-name">
+        {% if titleErr is defined %}
+          <p id="error">{{ titleErr }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label>Singer</label>
+        <input type="text" name="singer">
+        {% if singerErr is defined %}
+          <p id="error">{{ singerErr }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label>Genre</label>
+        <input type="checkbox" value="pop" name="genre[]">Pop
+        <input type="checkbox" value="folk" name="genre[]">Folk
+        <input type="checkbox" value="indie" name="genre[]">Indie
+        <input type="checkbox" value="romantic" name="genre[]">Romantic
+      </div>
+      {% if gErr is defined %}
+          <p id="error">{{ gErr }}</p>
+        {% endif %}
+      <div>
+        <label>Cover Image</label>
+        <input type="file" name="audio-img">
+        {% if imgErr is defined %}
+          <p id="error">{{ imgErr }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <input type="submit" value="Upload" class="buttons" id="login-btn" name="upload_btn">
+      </div>
+       <a href="/login_page" id="login-link">Login</a>
+        {% if errMessage is defined %}
+          <p id="error">{{ errMessage }}</p>
+        {% endif %}
+    </form>  
+    {% if successMessage is defined %}
+        <p id="success">{{ successMessage }}</p>
+    {% endif %}
+  </div> 
+</body> 
+
+{% endblock %}

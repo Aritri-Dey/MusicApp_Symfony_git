@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Favourites{% endblock %}
+{% block button %}
+  <form action="/loggedout" method="post" class="inline-form">
+    <input type="submit" value="Logout" class="buttons">
+  </form>
+{% endblock %}
+{% block body %}
+  <body class="fav">
+    {% if list is defined %}
+      <div class="fav-table">
+        <center>
+          <table>
+          
+            <tr><th>Hi {{user}}, your favourites are here!</th></tr>
+            {% for eachdata in list %}
+              <tr>
+                <td>{{eachdata.songname}}</td>
+                <td>
+                  <audio controls>
+                    <source src="{{ eachdata.path}}" type="audio/mpeg">
+                  </audio>
+                </td>
+                <td>
+                  <a href="/deletefav/{{eachdata.songid}}"><img src="/assets/image/delete.webp" alt="img" height="20px"></a>
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </center>
+       </div>
+
+    {% else %}
+      <center><table><tr><th>You have no favourites yet :(</th></tr></table></center>
+    {% endif %}
+  </body>
+{% endblock %}
+
+
+  
