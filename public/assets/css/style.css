@@ -13,6 +13,9 @@ body,html,* {
   max-width: 1440px;
   width: 100%;
 }
+.container-fluid {
+  display: flex;
+}
 .buttons {
   margin-right: 50px;
   padding: 10px;
@@ -25,11 +28,56 @@ a {
   text-decoration: none;
   color: white;
 }
+.logout-form {
+  padding: 0;
+}
+.parent {
+  position: relative;
+}
 .wrapper {
   margin-top: 50px;
   display: flex;
   justify-content: center;
 }
+
+
+.popup {
+  height: 700px;
+  width: 700px;
+  background-color: rgba(17, 15, 15, 0.7);
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 360%;
+  left: 50%;
+  box-shadow: 10px 10px 10px black;
+  display: none;
+
+}
+
+.popup-form {
+  background: none;
+  box-shadow: none;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 60px;
+  font-size: 25px;
+  /* background: rgba(1, 1, 1, 0.8); */
+  color: white;
+  border-radius: 50px;
+  /* box-shadow: 10px 10px 10px black; */
+}
+
+#close {
+  background: black;
+  padding: 10px 15px;
+  float: right;
+  color: white;
+  border: none;
+  margin: 20px;
+}
+
 /*css for music library page*/
 .music {
   background: url("../image/cont.webp"); 
@@ -346,7 +394,9 @@ input[type="file"] {
 .update-body .register form {
   background-color: rgba(32, 31, 31,0.7);
 }
-
+#updatebtn:hover {
+  cursor: pointer;
+}
 .inline-form {
   display: inline;
   background: none;
@@ -359,7 +409,7 @@ input[type="file"] {
 }
 
 /*Favorites page*/
-.fav{
+.fav {
   background: url("../image/bnw1.gif");
   /* background-position: center; */
   background-size: cover;
@@ -385,3 +435,4 @@ input[type="file"] {
 .fav audio {
   filter: invert();
 }
+

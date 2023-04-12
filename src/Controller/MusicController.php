@@ -36,19 +36,19 @@ use Knp\Component\Pager\PaginatorInterface;
 class MusicController extends AbstractController {
 
   /**
-   *  @var object $musicRepository 
+   *  @var MusicRepository $musicRepository 
    *    Global variable that stores object of MusicRepository class.
    */
   private $musicRepository;
 
   /**
-   *  @var object $favouriterepository
+   *  @var FavouriteRepository $favouriterepository
    *    Global variable that stores object of FavouriteRepository class.
    */
   private $favouriterepository;
 
   /**
-   *  @var object $userInfoRepository
+   *  @var UserInfoRepository $userInfoRepository
    *    Global variable that stores object of UserInfoRepository class.
    */
   private $userinfoRepository;
@@ -209,14 +209,11 @@ class MusicController extends AbstractController {
    *  @param Request $rq
    *    Gets information from client request through form.
    * 
-   *  @param object $m
-   *    Stores object of MusicRepository class.
-   * 
    *  @return Response
    *    Returns and renders page according to satisfied condition.
    */
   #[Route('/music/login', name: 'login')]
-  public function login(Request $rq, MusicRepository $m): Response
+  public function login(Request $rq): Response
   {  
     //Getting input field values through Request.
     $fusername = $rq->get("username");
@@ -252,9 +249,11 @@ class MusicController extends AbstractController {
         $session = $rq->getSession();
         $session->set('loggedin', '1');
         $session->set('user',$username);
+        $loggedin = $session->get('loggedin');
 
         return $this->render('music/music_lib.html.twig',[
-          'music' => $m->paginate($rq->query->getInt("page",1)),
+          'music' => $this->musicRepository->paginate($rq->query->getInt("page",1)),
+          'loggedin' => $loggedin,
           ]);
       }
       else {
@@ -290,7 +289,7 @@ class MusicController extends AbstractController {
    * 2. Sends a mail to the registered mail id if account exists, mail contains link to the form
    * where user can enter new password.
    * 
-   *  @param Request
+   *  @param Request $rq
    *    Gets information from client request through form.
    */
   #[Route('/resetpassword', name: 'resetPassword')]
@@ -357,7 +356,7 @@ class MusicController extends AbstractController {
       $con_pass = $rq->get("conpassword");
 
       //UserInfo class is fetched to update password in database
-      $rep = $this->em->getRepository(UserInfo::class)->findOneBy(['username' => $username]);
+      $rep = $this->userinfoRepository->findOneBy(['username' => $username]);
 
       if($rep) {
         if($pass == $con_pass) {
@@ -387,16 +386,12 @@ class MusicController extends AbstractController {
   }
 
 
-
   /**
    * Function to get data from music repository and display it to user in the music library page
    *  only if logged in.
    * 
    *  @param Request
    *    Gets information from client request through form.
-   * 
-   *  @param object $m
-   *    Stores object of MusicRepository class.
    * 
    *  @param object $paginatorInterface
    *    Stores object of PaginatorInterface class, used for pagination.
@@ -405,12 +400,13 @@ class MusicController extends AbstractController {
    *    Returns and renders the music libarry if logged in, else the login page if user is not logged in.
    */
   #[Route('/library', name: 'library')]
-  public function checkLoggedIn(Request $rq,MusicRepository $m,PaginatorInterface $paginatorInterface) :Response {
+  public function checkLoggedIn(Request $rq , PaginatorInterface $paginatorInterface) :Response {
     $session = $rq->getSession();
     $logged = $session->get('loggedin');
     if($logged == 1) {
       return $this->render('music/music_lib.html.twig',[
-      'music' => $m->paginate($rq->query->getInt("page",1)),
+      'music' => $this->musicRepository->paginate($rq->query->getInt("page",1)),
+      'loggedin' => $logged,
       ]);
     }
     return $this->render('music/login.html.twig');
@@ -420,9 +416,12 @@ class MusicController extends AbstractController {
    * Function for pagination.
    */
   #[Route('/lib2', name: 'lib2')]
-  public function lib2(Request $rq,MusicRepository $m,PaginatorInterface $paginatorInterface) :Response {
+  public function lib2(Request $rq , PaginatorInterface $paginatorInterface) :Response {
+    $session = $rq->getSession();
+    $logged = $session->get('loggedin');
     return $this->render('music/music_lib.html.twig',[
-      'music' => $m->paginate($rq->query->getInt("page",2)),
+      'music' => $this->musicRepository->paginate($rq->query->getInt("page",2)),
+      'loggedin' => $logged,
       ]);
   }
 
@@ -430,9 +429,12 @@ class MusicController extends AbstractController {
    * Function for pagination.
    */
   #[Route('/lib3', name: 'lib3')]
-  public function lib3(Request $rq,MusicRepository $m,PaginatorInterface $paginatorInterface) :Response {
+  public function lib3(Request $rq , PaginatorInterface $paginatorInterface) :Response {
+    $session = $rq->getSession();
+    $logged = $session->get('loggedin');
     return $this->render('music/music_lib.html.twig',[
-      'music' => $m->paginate($rq->query->getInt("page",3)),
+      'music' => $this->musicRepository->paginate($rq->query->getInt("page",3)),
+      'loggedin' => $logged,
       ]);
   }
   
@@ -476,7 +478,10 @@ class MusicController extends AbstractController {
   {  
     $session = $rq->getSession();
     $session->set('loggedin', '0');
-    return $this->render('music/logout.html.twig');
+    $logged = $session->get('loggedin');
+    return $this->render('music/logout.html.twig',[
+      'loggedin' => $logged,  
+    ]);
   }
 
 
@@ -817,9 +822,20 @@ class MusicController extends AbstractController {
    *    Returns and renders show.html.twig
    */
   #[Route('/music/{id}', methods: ['GET'] ,name: 'eachmusic')]
-  public function show($id): Response
+  public function show($id, Request $rq): Response
   {   
     $music = $this->musicRepository->find($id);
+    $session = $rq->getSession();
+    $currentuser = $session->get('user');
+
+    $rep = $this->em->getRepository(Favourite::class)->findOneBY(['user' => $currentuser, 'songid'=>$id]);
+    if ($rep) {
+      return $this->render('music/show.html.twig',[
+        'showmusic' => $music,
+        'exist' => TRUE,
+      ]);
+    }
+
     return $this->render('music/show.html.twig',[
       'showmusic' => $music,
     ]);
