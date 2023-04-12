@@ -1,3 +1,9 @@
+/**
+ * Function for frontend validation of registration form.
+ * 
+ *  @return bool
+ *    TRUE or FLASE depending on condition satisfaction. 
+ */
 function checkEmptyReg() {
   var username = document.forms["registration-form"]["username"].value;
   var email = document.forms["registration-form"]["email"].value;
@@ -9,28 +15,37 @@ function checkEmptyReg() {
   var emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
   if (username == null || username == "") {
-     alert("Please enter username");
+    $("#err").text("Enter username");
      return false;
     }
     if (email == null || email == "") {
-      alert("Please enter email");
+      $("#err").text("Enter a email id");
       return false;
     }
   if (number == null || number == "") {
-    alert("Please enter number");
+    $("#err").text("Enter contact number");
     return false;
   }
   if (password == null || password == "") {
-    alert("Please enter password");
+    $("#err").text("Enter a password");
     return false;
   }
   if(!alphabetRegex.test(username)) {
     $("#errorname").text("Should contain only alphabet.");
-    // alert("Username can only contain alphabet");
+    return false;
+  }
+  if(!phoneRegex.test(number)) {
+    $("#errorphone").text("Enter a valid hone number.");
     return false;
   }
 }
 
+/**
+ * Function for frontend validation of login form.
+ * 
+ *  @return bool
+ *    TRUE or FLASE depending on condition satisfaction. 
+ */
 function checkEmptyLogin() {
 
   var username = document.forms["loginform"]["username"].value;
@@ -42,58 +57,16 @@ function checkEmptyLogin() {
   var emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
   if (username == null || username == "") {
-    alert("Please enter username");
+    $("#err").text("Please enter username.");
     return false;
   }
   if (email == null || email == "") {
-    alert("Please enter email");
+    $("#err").text("Please enter email.");
     return false;
   }
   if (password == null || password == "") {
-    alert("Please enter password");
+    $("#err").text("Please enter passowrd.");
     return false;
   }
   
 }
-
-// $(function() {
-
-// });
-
-
-
-
-// $(function() {
-
-//   $("#name").keyup(function() {
-//     var alphabetRegex = /^[a-zA-Z]+$/;
-//     var val = this.value;
-//     if (!alphabetRegex.test(val)) {
-//       $("#errorname").text("only alphabets");
-//     }
-//     else {
-
-//     }
-//   });
-// })
-
-
-
-// $(function() {
-//   $.ajax({           
-//     type:"post",
-//     url: "/test",
-//     data: 
-//     {
-//       user: "ok"
-//     },
-//     dataType:"text",
-//     success: function(data) {
-//       console.log(data);
-//     },
-//     error: function(event) {
-//       console.log("asd");
-//     }
-//   });
-// })
-

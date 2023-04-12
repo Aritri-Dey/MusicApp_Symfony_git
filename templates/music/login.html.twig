@@ -27,9 +27,12 @@
       <div>
         <input type="submit" value="Login" class="buttons" id="login-btn" name="loginBtn" onclick="return checkEmptyLogin()">
       </div>
-    
+      <div id="err"></div>
       {% if errMessage is defined %}
         <p id="error">{{ errMessage }}</p>
+      {% endif %}
+      {% if msg is defined %}
+        <p id="error">{{ msg }}</p>
       {% endif %}
       <p><a href="/forgotpassword">Forgot your password?</a></p>
       <span>New user ? <a href="/register">Register now</a></span>

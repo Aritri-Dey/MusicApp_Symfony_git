@@ -55,6 +55,10 @@
         {% if errMessage is defined %}
           <p id="error">{{ errMessage }}</p>
         {% endif %}
+
+        {% if msg is defined %}
+          <p id="error">{{ msg }}</p>
+        {% endif %}
     </form>  
     {% if successMessage is defined %}
         <p id="success">{{ successMessage }}</p>

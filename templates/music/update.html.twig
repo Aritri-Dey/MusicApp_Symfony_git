@@ -51,6 +51,9 @@
       {% if successMessage is defined %}
         <p id="success">{{ successMessage }}</p>
       {% endif %}
+      {% if msg is defined %}
+        <p id="error">{{ msg }}</p>
+      {% endif %}
     </div> 
   </body>
 {% endblock %}
