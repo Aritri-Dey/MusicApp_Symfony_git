@@ -114,7 +114,7 @@ class MusicController extends AbstractController {
        * Validatiing all the form fields using respect package.
        * Empty validation, syntax validation.
        */
-      if(v::notEmpty()->validate($femail_old) == FALSE) {
+      if(!v::notEmpty()->validate($femail_old)) {
         return $this->render('music/update.html.twig',[
           'oldemailErr' => "Please enter your old email",
           ]);
@@ -129,7 +129,7 @@ class MusicController extends AbstractController {
           ]);  
         }
       }
-      else if(v::notEmpty()->validate($femail_new) == FALSE) {
+      else {
         return $this->render('music/update.html.twig',[
           'newemailErr' => "Please enter your new email",
           ]);
@@ -142,13 +142,13 @@ class MusicController extends AbstractController {
           ]); 
         }
       }
-      else if(v::notEmpty()->validate($fnumber) == FALSE) {
+      else {
         return $this->render('music/update.html.twig',[
           'phoneErr' => "Please enter contact number",
           ]);
       }
 
-      if(v::notEmpty()->validate($fgenre) == FALSE) {
+      if(!v::notEmpty()->validate($fgenre) ) {
         return $this->render('music/update.html.twig',[
           'gErr' => "Please select atleast one interest",
           ]);
@@ -156,7 +156,7 @@ class MusicController extends AbstractController {
 
 
       //UserInfo entity is searched, if email id matches then that entire row is fetched
-      $rep = $this->em->getRepository(UserInfo::class)->findOneBy(['email' => $femail_old]);
+      $rep = $this->userinfoRepository->findOneBy(['email' => $femail_old]);
       if($rep) {
         $session = $rq->getSession();
         $logged = $session->get('loggedin');
@@ -221,23 +221,23 @@ class MusicController extends AbstractController {
     $fpassword = $rq->get("password");
 
     //Form field validation.
-    if(v::notEmpty()->validate($fusername) == FALSE) {
+    if(!v::notEmpty()->validate($fusername)) {
       return $this->render('music/login.html.twig',[
         'nameErr' => "Please enter username",
         ]);
     }
-    if(v::notEmpty()->validate($femail) == FALSE) {
+    if(!v::notEmpty()->validate($femail)) {
       return $this->render('music/login.html.twig',[
         'emailErr' => "Please enter email",
         ]);
     }
-    if(v::notEmpty()->validate($fpassword) == FALSE) {
+    if(!v::notEmpty()->validate($fpassword)) {
       return $this->render('music/login.html.twig',[
         'passErr' => "Please enter password",
         ]);
     }
 
-    $rep = $this->em->getRepository(UserInfo::class)->findOneBy(['username' => $fusername]);
+    $rep = $this->userinfoRepository->findOneBy(['username' => $fusername]);
 
     if($rep) {
       $username = $rep->getUsername();
@@ -517,13 +517,13 @@ class MusicController extends AbstractController {
 
     //Username field validation.
     if(v::notEmpty()->validate($username)){ 
-      if(v::alpha()->validate($username) == FALSE){
+      if(!v::alpha()->validate($username)){
         return $this->render('/music/register.html.twig',[
           "nameErr" => "Username can only contain alphabets."
         ]);  
       }
     }
-    else if(v::notEmpty()->validate($username) == FALSE) {
+    else {
       return $this->render('/music/register.html.twig',[
         "nameErrEmpty" => "Please enter username."
       ]);  
@@ -540,7 +540,7 @@ class MusicController extends AbstractController {
         ]);  
       }
     }
-    else if(v::notEmpty()->validate($email) == FALSE) {
+    else{
       return $this->render('/music/register.html.twig',[
         "emailErrEmpty" => "Please enter email address."
       ]);  
@@ -548,27 +548,27 @@ class MusicController extends AbstractController {
 
     //Contact number field validation.
     if(v::notEmpty()->validate($number)){
-      if(v::regex('/^[0-9+]{13}+$/')->validate($number) == FALSE) {
+      if(!v::regex('/^[0-9+]{13}+$/')->validate($number)) {
         return $this->render('/music/register.html.twig',[
           "numErr" => "Please enter a valid phone number starting with +91."
         ]); 
       }
     }
-    else if(v::notEmpty()->validate($number) == FALSE) {
+    else  {
       return $this->render('/music/register.html.twig',[
         "numErrEmpty" => "Please enter contact number."
       ]);  
     }
 
     //genre field validation.
-    if(v::notEmpty()->validate($garr) == FALSE){
+    if(!v::notEmpty()->validate($garr)){
       return $this->render('/music/register.html.twig',[
         "gErr" => "Please select atleast one genre."
       ]); 
     }
 
     //Password field validation.
-    if(v::notEmpty()->validate($password) == FALSE){
+    if(!v::notEmpty()->validate($password)){
       return $this->render('/music/register.html.twig',[
         "passErr" => "Please set a password."
       ]); 
@@ -739,32 +739,32 @@ class MusicController extends AbstractController {
         $imgFile = $rq->files->get("audio-img");
         $newImgFileName = uniqid();
 
-        if(v::notEmpty()->validate($title) == FALSE){
+        if(!v::notEmpty()->validate($title)){
           return $this->render('/music/upload.html.twig',[
             "titleErr" => "Please set a title for the song."
           ]); 
         }
 
-        if(v::notEmpty()->validate($singer) == FALSE){
+        if(!v::notEmpty()->validate($singer)){
           return $this->render('/music/upload.html.twig',[
             "singerErr" => "Please set a singer for the song."
           ]); 
         }
 
-        if(v::notEmpty()->validate($audioFile) == FALSE){
+        if(!v::notEmpty()->validate($audioFile)){
           return $this->render('/music/upload.html.twig',[
             "audioErr" => "Please select an audio file to upload."
           ]); 
         }
 
         //genre field validation.
-        if(v::notEmpty()->validate($genre) == FALSE){
+        if(!v::notEmpty()->validate($genre)){
           return $this->render('/music/upload.html.twig',[
             "gErr" => "Please select atleast one genre."
           ]); 
         }
 
-        if(v::notEmpty()->validate($imgFile) == FALSE){
+        if(!v::notEmpty()->validate($imgFile)){
           return $this->render('/music/upload.html.twig',[
             "imgErr" => "Please select an image file to upload."
           ]); 
