@@ -6,7 +6,8 @@ use Respect\Validation\Validator as v;
 /**
  * This class is used to validate all form fields in the upload form.
  */
-class UploadValidation {
+class UploadValidation 
+{
 
    /**
    *  @var string $title
@@ -39,16 +40,16 @@ class UploadValidation {
    * 
    *  @param string $title
    *    Stores title entered by user.
-   * @param string $singer
+   *  @param string $singer
    *    Stores singer entered by user.
-   * @param string $audioFile
+   *  @param string $audioFile
    *    Stores audioFile entered by user.
-   * @param string genre
+   *  @param string genre
    *    Stores genre entered by user.
-   * @param string $imgFile
+   *  @param string $imgFile
    *    Stores imgFile entered by user.
    */
-  function __construct(string $title , string $singer, string $audio, string $genre, string $img) {
+  public function __construct(string $title , string $singer, string $audio, string $genre, string $img) {
     $this->title = $title;
     $this->singer = $singer;
     $this->audioFile = $audio;
@@ -62,23 +63,24 @@ class UploadValidation {
    *  @return string
    *    Returns message according to validation error.
    */
-  function validateData() {
-    if (!v::notEmpty()->validate($this->title)){
+  public function validateData() {
+    if (!v::notEmpty()->validate($this->title)) {
       return "Please set a title";
     }
-    if (!v::notEmpty()->validate($this->singer)){
+    if (!v::notEmpty()->validate($this->singer)) {
       return "Please set a singer";
     }
-    if (!v::notEmpty()->validate($this->audioFile)){
+    if (!v::notEmpty()->validate($this->audioFile)) {
       return "Please upload the audio";
     }
-    if (!v::notEmpty()->validate($this->genre)){
+    if (!v::notEmpty()->validate($this->genre)) {
       return "Please select a genre";
     }
-    if (!v::notEmpty()->validate($this->imgFile)){
+    if (!v::notEmpty()->validate($this->imgFile)) {
       return "Please upload a cover image";
     }
     return "";
   }
 }
+
 ?>

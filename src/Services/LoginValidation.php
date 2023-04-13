@@ -6,7 +6,8 @@ use Respect\Validation\Validator as v;
 /**
  * This class is used to validate all form fields in the login form.
  */
-class LoginValidation {
+class LoginValidation 
+{
 
   /**
    *  @var string $username
@@ -29,12 +30,12 @@ class LoginValidation {
    * 
    *  @param string $username
    *    Stores username entered by user.
-   * @param string $email
+   *  @param string $email
    *    Stores email entered by user.
-   * @param string $password
+   *  @param string $password
    *    Stores password entered by user.
    */
-  function __construct(string $username , string $email, string $password) {
+  public function __construct(string $username , string $email, string $password) {
     $this->username = $username;
     $this->email = $email;
     $this->password = $password;
@@ -46,17 +47,18 @@ class LoginValidation {
    *  @return string
    *    Returns message according to validation error.
    */
-  function validateData() {
-    if (!v::notEmpty()->validate($this->username)){
+  public function validateData() {
+    if (!v::notEmpty()->validate($this->username)) {
       return "Please enter username";
     }
-    else if (!v::notEmpty()->validate($this->email)){
+    else if (!v::notEmpty()->validate($this->email)) {
       return "Please enter email";
     }
-    else if (!v::notEmpty()->validate($this->password)){
+    else if (!v::notEmpty()->validate($this->password)) {
       return "Please enter a password";
     }
     return "";
   }
 }
+
 ?>

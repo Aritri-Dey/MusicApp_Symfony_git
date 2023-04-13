@@ -4,21 +4,22 @@
   /**
    * Class to check whether mail is valid or not using API.
    */
-  class CheckMail {
+  class CheckMail 
+  {
     
     /**
-     *  @var $mail -
-     *    global variable
+     *  @var string 
+     *    Stores the mail id to be checked.
      */
-    public $mail;
+    private $mail;
 
     /**
      * Constructor to initialise global variable.
      * 
-     *  @param string $mail-
+     *  @param string $mail
      *    Mail id to be checked.
      */
-    function __construct(string $mail){
+    public function __construct(string $mail) {
      $this->mail = $mail;
     }
 
@@ -29,16 +30,17 @@
      *  @return bool
      *    Returns true or false according to condition.
      */
-    function check(){
+    public function checkMail() {
       // Set email address
       $emailAddress = $this->mail;
+      $password = $_ENV['API_KEY'];
       // Set API Access Key
       $curl = curl_init();
       curl_setopt_array($curl, array(
       CURLOPT_URL => "https://api.apilayer.com/email_verification/check?email=$emailAddress",
         CURLOPT_HTTPHEADER => array(
           "Content-Type: text/plain",
-          "apikey: $_ENV['API_KEY']"
+          "apikey: $password"
         ),
         CURLOPT_RETURNTRANSFER => TRUE,
         CURLOPT_ENCODING => "",
@@ -59,4 +61,5 @@
       return FALSE;
     }
   }
+  
 ?>

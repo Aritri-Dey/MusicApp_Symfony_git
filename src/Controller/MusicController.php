@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Music;
 use App\Entity\UploadTable;
 use App\Entity\UserInfo;
-use App\Services\CheckMail;
 use App\Entity\Favourite;
 use App\Services\SendMail;
 use App\Services\UpdateValidation;
@@ -22,14 +21,13 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Respect\Validation\Validator as v;
-use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * This class implements the main controller of the application
  * that handles all the functions related to routing.
  */
-class MusicController extends AbstractController {
+class MusicController extends AbstractController 
+{
   /**
    *  Constant to store error message for empty field.
    */
@@ -91,6 +89,21 @@ class MusicController extends AbstractController {
    *    Global variable that stores object of UploadTable class.
    */
   private $uploadTable;
+  /**
+   *  @var object $user
+   *    Stores object of UserInfo class.
+   */
+  private $user;
+  /**
+   *  @var object $fav
+   *    Stores object of Favourite class.
+   */
+  private $fav;
+  /**
+   *  @var object $upload
+   *    Stores object of uploadTable class.
+   */
+  private $upload;
 
   /**
    * Constructer to initialize global variables.
@@ -99,9 +112,9 @@ class MusicController extends AbstractController {
    *    Global variable that stores object of MusicRepository class. 
    *  @param UserInfoRepository $userInfoRepository 
    *    Global variable that stores object of userInfoRepository class.
-   * @param FavouriteRepository $favouriteRepository 
+   *  @param FavouriteRepository $favouriteRepository 
    *    Global variable that stores object of FavouriteRepository class.
-   * @param object $entityManager 
+   *  @param object $entityManager 
    *    Global variable that stores object of EntityManager class.
    */
   public function __construct(MusicRepository $musicRepository, UserInfoRepository $userInfoRepository , FavouriteRepository $favouriteRepository ,EntityManagerInterface $entityManager) {
@@ -113,6 +126,12 @@ class MusicController extends AbstractController {
     $this->musicTable = $this->em->getRepository(Music::class);
     $this->favTable = $this->em->getRepository(Favourite::class);
     $this->uploadTable = $this->em->getRepository(UploadTable::class);
+    // Creating object of class UserInfo.
+    $this->user = new UserInfo(); 
+    // Creating object of class Favourite.
+    $this->fav = new Favourite(); 
+    // Creating object of class UploadTable.
+    $this->upload = new UploadTable();
   }
 
   /**
@@ -123,17 +142,16 @@ class MusicController extends AbstractController {
    *    Returns and renders index page. 
    **/
   #[Route('/index', name: 'index')]
-  public function index(): Response
-  {   
+  public function index(): Response {   
     return $this->render('music/index.html.twig');
   }
 
   /**
    * Function to render update form page and update user information.
-   *  1.Can be accessed only if user is logged in
-   *  2.User infomration is taken through upadte form and validated.
-   *  3.If validation is successful, then inofrmation is updated in database,
-   *    else error message is returned, and page is redirected to update form. 
+   * 1.Can be accessed only if user is logged in
+   * 2.User infomration is taken through upadte form and validated.
+   * 3.If validation is successful, then inofrmation is updated in database,
+   * else error message is returned, and page is redirected to update form. 
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
@@ -144,7 +162,8 @@ class MusicController extends AbstractController {
   #[Route('/music/update',name: 'update')]
   public function update(Request $rq): Response {   
     if ($rq->get('update_btn')) {
-      //Getting input field values through Request.
+
+      // Getting input field values through Request.
       $emailOld = $rq->get("oldemail");
       $emailNew = $rq->get("newemail");
       $number = $rq->get("number");
@@ -167,15 +186,15 @@ class MusicController extends AbstractController {
           ]);
       }
 
-      // UserInfo entity is searched, if email id matches then that entire row is fetched
+      // UserInfo entity is searched, if email id matches then that entire row is fetched.
       $rep = $this->userInfoTable->findOneBy(['email' => $emailOld]);
       if ($rep) {
         $session = $rq->getSession();
         $logged = $session->get('loggedin');
-        // Checkes if user is logged in
-        if($logged){
+        // Checks if user is logged in.
+        if($logged) {
         
-          // Setting value and saving in database
+          // Setting value and saving in database.
           $rep->setEmail($emailNew); 
           $rep->setNumber($number);
           $rep->setGenre($genre);
@@ -211,12 +230,12 @@ class MusicController extends AbstractController {
   #[Route('/music/login', name: 'login')]
   public function login(Request $rq): Response {  
     if ($rq->get('loginBtn')) {
-      //Getting input field values through Request.
+      // Getting input field values through Request.
       $fusername = $rq->get("username");
       $femail = $rq->get("email");
       $fpassword = $rq->get("password");
 
-      //Form field validation.
+      // Form field validation.
       $valObj = new LoginValidation($fusername , $femail, $fpassword);
         $msg = $valObj->validateData();
         if ($msg) {
@@ -232,7 +251,8 @@ class MusicController extends AbstractController {
         $password = $rep->getPassword();
         $email = $rep->getEmail();
 
-        //If correct credentails are filled, user is logged in, loggedin session variable is set to 1.
+        // If correct credentails are filled, user is logged in, loggedin session 
+        // variable is set to 1.
         if ($password == $fpassword && $email == $femail) {
           $session = $rq->getSession();
           $session->set('loggedin', '1');
@@ -257,17 +277,16 @@ class MusicController extends AbstractController {
 
   /**
    * Function to reset password of user.
-   * 1. Gets username from user through form and finds the registerd email id corresponding to
-   * that username.
-   * 2. Sends a mail to the registered mail id if account exists, mail contains link to the form
-   * where user can enter new password.
+   * 1.Gets username from user through form and finds the registered 
+   * email id corresponding to that username.
+   * 2.Sends a mail to the registered mail id if account exists, mail contains
+   * link to the form where user can enter new password.
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
    */
   #[Route('/resetpassword', name: 'resetPassword')]
-  public function resetPassword(Request $rq): Response
-  {   
+  public function resetPassword(Request $rq): Response {   
     if ($rq->get('resetBtn')) {
       $username =$rq->get('username');
     
@@ -276,7 +295,7 @@ class MusicController extends AbstractController {
       if ($rep) {
         $email = $rep->getEmail();
 
-        //Object of SendMail class is created to send mail to user. 
+        // Object of SendMail class is created to send mail to user. 
         $mailObj = new SendMail($email);
         $flag = $mailObj->mailer();
         if ($flag) {
@@ -299,24 +318,23 @@ class MusicController extends AbstractController {
    * Function to get new password from user and updating it in database.
    * User receives this link via mail.
    * On submitting form, first it is chekd whether user exist or not,
-   *  if yes, password is updated, else error is shown.
+   * if yes, password is updated, else error is shown.
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
    * 
    *  @return Response
-   *    returns and redners resetpassword.html.twig whcih contains a form to submit username.
+   *    Returns and redners resetpassword.html.twig whcih contains a form to submit username.
    */
   #[Route('/newpassword', name: 'newpassword')]
-  public function newPassword(Request $rq): Response
-  {   
+  public function newPassword(Request $rq): Response {   
     if ($rq->get('submitBtn')) {
-      //Getting input field values through Request.
+      // Getting input field values through Request.
       $username = $rq->get("username");
       $pass = $rq->get("password");
       $con_pass = $rq->get("conpassword");
 
-      //UserInfo class is fetched to update password in database
+      // UserInfo class is fetched to update password in database
       $rep = $this->userInfoTable->findOneBy(['username' => $username]);
 
       if ($rep) {
@@ -342,8 +360,8 @@ class MusicController extends AbstractController {
   }
 
   /**
-   * Function to get data from music repository and display it to user in the music library page
-   *  only if logged in.
+   * Function to get data from music repository and display it to user in the 
+   * music library page only if logged in.
    * 
    *  @param Request
    *    Gets information from client request through form.
@@ -352,8 +370,8 @@ class MusicController extends AbstractController {
    *    Stores object of PaginatorInterface class, used for pagination.
    * 
    *  @return Response
-   *    Returns and renders the music libarry if logged in, else the login page if 
-   *    user is not logged in.
+   *    Returns and renders the music libarry if logged in, else the 
+   *    login page if user is not logged in.
    */
   #[Route('/library', name: 'library')]
   public function checkLoggedIn(Request $rq) :Response {
@@ -370,6 +388,9 @@ class MusicController extends AbstractController {
 
   /**
    * Function for pagination.
+   * 
+   *  @param Request
+   *    Gets information from client request through form. 
    */
   #[Route('/lib2', name: 'lib2')]
   public function lib2(Request $rq) :Response {
@@ -383,9 +404,12 @@ class MusicController extends AbstractController {
 
   /**
    * Function for pagination.
+   * 
+   *  @param Request
+   *    Gets information from client request through form.
    */
   #[Route('/lib3', name: 'lib3')]
-  public function lib3(Request $rq , PaginatorInterface $paginatorInterface) :Response {
+  public function lib3(Request $rq) :Response {
     $session = $rq->getSession();
     return $this->render('music/music_lib.html.twig',[
       'music' => $this->musicTable->paginate($rq->query->getInt("page",3)),
@@ -400,7 +424,8 @@ class MusicController extends AbstractController {
    *    Gets information from client request through form.
    * 
    *  @return Response
-   *    Returns the mysong.html.twig page if user is logged in, else renders the login page.
+   *    Returns the mysong.html.twig page if user is logged in, else
+   *    renders the login page.
    */
   #[Route('/mysongs', name: 'mysongs')]
   public function mySongs(Request $rq) :Response {
@@ -417,7 +442,8 @@ class MusicController extends AbstractController {
 
   /**
    * Function to logout user.
-   *  When a user logs out of the applicayon, the 'loggedin' session variable is set to 0.
+   * When a user logs out of the applicayon, the 'loggedin' session 
+   * variable is set to 0.
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
@@ -426,8 +452,7 @@ class MusicController extends AbstractController {
    *    Returns the logged out page.
    */
   #[Route('/loggedout', name: 'loggedout')]
-  public function loggedOut(Request $rq): Response
-  {  
+  public function loggedOut(Request $rq): Response {  
     $session = $rq->getSession();
     $session->set('loggedin', '0');
     return $this->render('music/logout.html.twig',[
@@ -436,27 +461,29 @@ class MusicController extends AbstractController {
   }
 
   /**
-   * Function to check and validate data entered by user in the registration form.
-   * If validation is successful, the data is pushed to databse and login page is rendered.
+   * Function to check and validate data entered by user in the 
+   * registration form.
+   * If validation is successful, the data is pushed to databse and
+   * login page is rendered.
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
    * 
    *  @return Response
-   *    Renders login page if form validation is successful, else renders the login page.
+   *    Renders login page if form validation is successful, else 
+   *    renders the login page.
    */
   #[Route('/music/register', name: 'checkRegister')]
-  public function checkRegister( Request $rq): Response
-  {  
+  public function checkRegister( Request $rq): Response {  
     if ($rq->get('regBtn')) {
-      //Getting input field values through Request.
+      // Getting input field values through Request.
       $username = $rq->get("username");
       $email = $rq->get("email");
       $number = $rq->get("number");
       $password = $rq->get("password");
       $garr = $rq->get('genre');
 
-      //Register form field validation.
+      // Register form field validation.
       $valObj1 = new NumberGenreValidation($number, $garr);
       $msg1 = $valObj1->validateData();
       $valObj2 = new LoginValidation($username, $email, $password);
@@ -483,17 +510,15 @@ class MusicController extends AbstractController {
         }
       }
 
-      //creating object of class UserInfo
-      $user = new UserInfo(); 
-      //setting value and saving in database
-      $user->setUsername($username);
-      $user->setEmail($email);
-      $user->setPassword($password);
-      $user->setNumber($number);
-      $user->setGenre($garr);
+      // Setting value and saving in database.
+      $this->user->setUsername($username);
+      $this->user->setEmail($email);
+      $this->user->setPassword($password);
+      $this->user->setNumber($number);
+      $this->user->setGenre($garr);
     
-      $this->em->persist($user);
-      //executing crud operations
+      $this->em->persist($this->user);
+      // Executing crud operations.
       $this->em->flush(); 
 
       return $this->render('music/login.html.twig');
@@ -503,18 +528,19 @@ class MusicController extends AbstractController {
 
   /**
    * Function to add a song to favourites.
-   * When user adds a song to favourites song id, title, path is fetched and ois added to the entity,
-   * and favourite.html.twig is rendered which shows list of favourite songs of user.
+   * When user adds a song to favourites song id, title, path is fetched 
+   * and added to the entity, and favourite.html.twig is rendered which 
+   * shows list of favourite songs of user.
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
    * 
    *  @return Response
-   *    Redirects to function which renders the favorite page favourite.html.twig.
+   *    Redirects to function which renders the favorite 
+   *    page favourite.html.twig.
    */
   #[Route('/addtofav/{id}', name: 'addtofav')]
-  public function addToFavourite( $id, Request $rq): Response
-  {  
+  public function addToFavourite( $id, Request $rq): Response {  
     $rep = $this->musicRepository->findOneBy(['uid' => $id]);
 
     $songId = $rep->getId();
@@ -527,16 +553,15 @@ class MusicController extends AbstractController {
     if ($checkExist) {
       return $this->redirectToRoute('favourite');
     }
-    //creating object of class Favourite
-    $fav = new Favourite(); 
-    //setting value and saving in database
-    $fav->setUser($currentUser); 
-    $fav->setSongid($songId);
-    $fav->setPath($path);
-    $fav->setSongname($songname);
+    
+    // Setting value and saving in database.
+    $this->fav->setUser($currentUser); 
+    $this->fav->setSongid($songId);
+    $this->fav->setPath($path);
+    $this->fav->setSongname($songname);
 
-    $this->em->persist($fav);
-    //executing crud operations
+    $this->em->persist($this->fav);
+    // Executing crud operations.
     $this->em->flush(); 
     return $this->redirectToRoute('favourite');
   }
@@ -550,9 +575,8 @@ class MusicController extends AbstractController {
    *    Gets information from client request through form.
    * 
    *  @return Response
-   *    Returns and renders page with currectuser and songlist, if user does not 
-   *    have any favourite song , then returns
-   *    only currentuser.
+   *    Returns and renders page with currectuser and songlist, if user does
+   *    not have any favourite song , then returns only currentuser.
    */
   #[Route('/favourite', name: 'favourite')]
   public function favourite(Request $rq): Response {  
@@ -589,8 +613,7 @@ class MusicController extends AbstractController {
    *    Redirects route to function to show favourites page after deleting. 
    */
   #[Route('/deletefav/{id}', name: 'deletefav')]
-  public function deleteFav(Request $rq,$id): Response
-  { 
+  public function deleteFav(Request $rq,$id): Response { 
     $session = $rq->getSession();
     $currentUser = $session->get('user');
     $rep = $this->favTable->findOneBY(['user' => $currentUser, 'songid'=>$id]);
@@ -603,13 +626,15 @@ class MusicController extends AbstractController {
   /**
    * Function to upload a song by user.
    * All data is accepted through form and validated. 
-   * If validation is successful data is stored in the UploadTable entity, else error is shown.
+   * If validation is successful data is stored in the UploadTable entity, 
+   * else error is shown.
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
    * 
    *  @return Response
-   *    Return and renders the upload page if user is logged in, else renders the login page. 
+   *    Return and renders the upload page if user is logged in, 
+   *    else renders the login page. 
    */
   #[Route('/music/upload', name: 'upload')]
   public function upload(Request $rq): Response {  
@@ -617,9 +642,9 @@ class MusicController extends AbstractController {
     if ($rq->get('upload_btn')) {
       $session = $rq->getSession();
       $logged = $session->get('loggedin');
-      if ($logged){
+      if ($logged) {
       
-        //Getting input field values through Request.
+        // Getting input field values through Request.
         $title = $rq->get("audio-name");
         $singer = $rq->get("singer");
         $genre = $rq->get("genre");
@@ -631,7 +656,7 @@ class MusicController extends AbstractController {
         $imgFile = $rq->files->get("audio-img");
         $newImgFileName = uniqid();
 
-        //Validation check for fileds
+        // Validation check for fileds.
         $valObj = new UploadValidation($title , $singer, $audioFile,$genre, $imgFile);
         $msg = $valObj->validateData();
         if ($msg) {
@@ -654,14 +679,14 @@ class MusicController extends AbstractController {
           return new Response($e->getMessage());
         }
 
-        $upload = new UploadTable();
         
-        $upload->setUploadTitle($title);
-        $upload->setUploadSinger($singer);
-        $upload->setAudioPath($newAudioFileName . ".mp3");
-        $upload->setImagePath($newImgFileName . '.jpg');
         
-        $this->em->persist($upload);
+        $this->upload->setUploadTitle($title);
+        $this->upload->setUploadSinger($singer);
+        $this->upload->setAudioPath($newAudioFileName . ".mp3");
+        $this->upload->setImagePath($newImgFileName . '.jpg');
+        
+        $this->em->persist($this->upload);
         $this->em->flush();
       
         return $this->render('/music/upload.html.twig',[
@@ -686,8 +711,7 @@ class MusicController extends AbstractController {
    *    Returns and renders show.html.twig
    */
   #[Route('/music/{id}', methods: ['GET'] ,name: 'eachmusic')]
-  public function show($id, Request $rq): Response
-  {   
+  public function show($id, Request $rq): Response {   
     $music = $this->musicTable->find($id);
     $session = $rq->getSession();
     $currentuser = $session->get('user');

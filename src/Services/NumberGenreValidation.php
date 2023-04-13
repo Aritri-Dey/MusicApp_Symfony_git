@@ -2,12 +2,12 @@
 namespace App\Services;
 
 use Respect\Validation\Validator as v;
-use App\Services\CheckMail;
 
 /**
- * This class is used to validate all form fields in the registration form.
+ * This class is used to validate the number and genre fields..
  */
-class NumberGenreValidation {
+class NumberGenreValidation 
+{
 
   /**
    *  @var string $username
@@ -38,12 +38,12 @@ class NumberGenreValidation {
   /**
    * Constructor to initialise global variables.
    * 
-   * @param string $number
+   *  @param string $number
    *    Stores contact number entered by user.
-   * @param string $genre
+   *  @param string $genre
    *    Stores genre selected by user.
    */
-  function __construct(string $number, string $genre) {
+  public function __construct(string $number, string $genre) {
     $this->number = $number;
     $this->genre = $genre;
   }
@@ -54,25 +54,14 @@ class NumberGenreValidation {
    *  @return string
    *    Returns message according to validation error.
    */
-  function validateData() {
-    // if (!v::notEmpty()->validate($this->email)){
-    //   return "Please enter email id";
-    // }
-    // else {
-    //   $mailObj = new CheckMail($this->email);
-    //   $flag = $mailObj->check();
-    //   if ($flag == FALSE) {
-    //     return "Enter a valid email id.";
-    //   }
-    // }
-
-    if (!v::notEmpty()->validate($this->number)){
+  public function validateData() {
+    if (!v::notEmpty()->validate($this->number)) {
       return "Please enter contact number";
     }
     else if (!v::regex('/^[0-9+]{13}+$/')->validate($this->number)) {
       return "Enter a valid phone number.";
     }
-    if (!v::notEmpty()->validate($this->genre)){
+    if (!v::notEmpty()->validate($this->genre)) {
       return "Please select a genre";
     }
     return "";
