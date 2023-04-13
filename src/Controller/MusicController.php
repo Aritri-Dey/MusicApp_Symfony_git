@@ -173,7 +173,7 @@ class MusicController extends AbstractController {
         $session = $rq->getSession();
         $logged = $session->get('loggedin');
         // Checkes if user is logged in
-        if($logged == 1){
+        if($logged){
         
           // Setting value and saving in database
           $rep->setEmail($emailNew); 
@@ -279,7 +279,7 @@ class MusicController extends AbstractController {
         //Object of SendMail class is created to send mail to user. 
         $mailObj = new SendMail($email);
         $flag = $mailObj->mailer();
-        if ($flag == TRUE) {
+        if ($flag) {
           return $this->render('music/resetPassword.html.twig',[
             'succmsg' => 'A mail has been sent to your registered email id.',
             ]);
@@ -330,12 +330,9 @@ class MusicController extends AbstractController {
             "succmsg" => "Password updated successfully!"
           ]);
         }
-        else {
-          return $this->render('music/resetPasswordForm.html.twig',[
-            "errmsg" => "Password field and confirm password does not match."
-          ]);
-        }
-        
+        return $this->render('music/resetPasswordForm.html.twig',[
+          "errmsg" => "Password field and confirm password does not match."
+        ]);        
       }
       return $this->render('music/resetPasswordForm.html.twig',[
         'errmsg' => 'Wrong username',
@@ -362,7 +359,7 @@ class MusicController extends AbstractController {
   public function checkLoggedIn(Request $rq) :Response {
     $session = $rq->getSession();
     $logged = $session->get('loggedin');
-    if ($logged == 1) {
+    if ($logged) {
       return $this->render('music/music_lib.html.twig',[
       'music' => $this->musicTable->paginate($rq->query->getInt("page",1)),
       'loggedin' => $logged,
@@ -409,7 +406,7 @@ class MusicController extends AbstractController {
   public function mySongs(Request $rq) :Response {
     $session = $rq->getSession();
     $logged = $session->get('loggedin');
-    if ($logged == 1) {
+    if ($logged) {
       $music = $this->uploadTable->findAll();
       return $this->render('music/mysong.html.twig',[
       'music' => $music,
@@ -434,7 +431,7 @@ class MusicController extends AbstractController {
     $session = $rq->getSession();
     $session->set('loggedin', '0');
     return $this->render('music/logout.html.twig',[
-      'loggedin' => $session->get('loggedin'),  
+      'loggedin' => '0',  
     ]);
   }
 
@@ -561,7 +558,7 @@ class MusicController extends AbstractController {
   public function favourite(Request $rq): Response {  
     $session = $rq->getSession();
     $logged = $session->get('loggedin');
-    if ($logged == 1) {
+    if ($logged) {
       $currentUser = $session->get('user');
 
       $rep = $this->favTable->findBy(['user' => $currentUser]);
@@ -620,7 +617,7 @@ class MusicController extends AbstractController {
     if ($rq->get('upload_btn')) {
       $session = $rq->getSession();
       $logged = $session->get('loggedin');
-      if ($logged == 1){
+      if ($logged){
       
         //Getting input field values through Request.
         $title = $rq->get("audio-name");
@@ -671,14 +668,10 @@ class MusicController extends AbstractController {
           "successMessage" => "Song upload sucessful."
         ]);  
       }
-      
-      else {
-        return $this->render('/music/upload.html.twig',[
-          "errMessage" => "Please login first."
-        ]);
-      }      
+      return $this->render('/music/upload.html.twig',[
+        "errMessage" => "Please login first."
+      ]); 
     }
-
     return $this->render('/music/upload.html.twig');
   }
 
