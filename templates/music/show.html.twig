@@ -40,34 +40,10 @@
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5zm3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5z"/>
           </svg>
         </div>
-
-
       </div>
     </div>
   </body>
 
-
   <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-  <script>
-    function playBtn() {
-    document.getElementById('player').play(); 
-    $('#playbtn').css('display','none'); 
-    $('#pausebtn').css('display','block');
-
-    document.getElementById('image').classList.add("animate");
-    }
-
-    function pauseBtn() {
-    document.getElementById('player').pause(); 
-    $('#playbtn').css('display','block'); 
-    $('#pausebtn').css('display','none');
-
-    document.getElementById('image').classList.remove("animate");
-    }
-
-  </script>
+  <script src="/assets/js/animate.js"></script>
 {% endblock %}
-
-
-
- 

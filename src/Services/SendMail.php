@@ -1,11 +1,12 @@
 <?php
-  namespace App\Entity;
+  namespace App\Services;
 
-  //Import PHPMailer classes into the global namespace
-  //These must be at the top of your script, not inside a function
   use PHPMailer\PHPMailer\PHPMailer;
-  use PHPMailer\PHPMailer\SMTP;
   use PHPMailer\PHPMailer\Exception;
+
+  /**
+   * Class to send mail to user.
+   */
   class SendMail {
 
     /**
@@ -25,7 +26,9 @@
       $this->mail = $mail;
     }
 
-
+    /**
+     * Function to check for valid email id and send mail to user.
+     */
     function mailer() {
 
       //Create an instance; passing `true` enables exceptions
@@ -41,15 +44,14 @@
         //Enable SMTP authentication.     
         $mail->SMTPAuth   = TRUE;                  
         //SMTP username                 
-        $mail->Username   = 'aritri.dey@innoraft.com';             
+        $mail->Username   = $_ENV['MY_MAIL'];             
         //SMTP password        
-        $mail->Password   = 'nwihefeexabanjyt';   
+        $mail->Password   = $_ENV['MAIL_PASSWORD'];   
         //Enable implicit TLS encryption.                         
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            
         $mail->SMTPSecure = 'tls';
         //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS.
         $mail->Port       = 587;                                    
-        /* port 465 can also be used insted of 587, but it is less secure.*/ 
                                           
         //Recipients
         $mail->setFrom('aritri.dey@innoraft.com', 'Aritri Dey');
@@ -60,20 +62,15 @@
         $mail->isHTML(TRUE);   
         //Set email format to HTML.                               
         $mail->Subject = 'Reset Password mail';
-        $mail->Body    = '<b>Hello </b>' . $this->mail. '<br> Link to reset password-<br>http://127.0.0.1:8000/resetPasswordForm';
+        $mail->Body    = '<b>Hello </b>' . $this->mail. '<br> Link to reset password-<br>http://127.0.0.1:8000/newpassword';
         $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
         $mail->send();
-        $flag = TRUE;
+        return TRUE;
       } 
       catch (Exception $e) {
-        $flag = FALSE;
-        // echo "<br>Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        return FALSE;
       }
-
-      return $flag;
-
     }
-
   }
 ?>

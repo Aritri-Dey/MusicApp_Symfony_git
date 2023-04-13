@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use Respect\Validation\Validator as v;
-use App\Entity\CheckMail;
+use App\Services\CheckMail;
 
 /**
  * This class is used to validate all form fields in the update form.
@@ -10,15 +10,15 @@ use App\Entity\CheckMail;
 class UpdateValidation {
 
   /**
-   *  @var string $oldmail
+   *  @var string $oldMail
    *    Stores oldmail entered by user.
    */
-  private $oldmail;
+  private $oldMail;
   /**
-   *  @var string $newmail
+   *  @var string $newMail
    *    Stores newmail entered by user.
    */
-  private $newmail;
+  private $newMail;
   /**
    *  @var string $number
    *    Stores number entered by user.
@@ -33,20 +33,14 @@ class UpdateValidation {
   /**
    * Constructor to initialise global variables.
    * 
-   *  @param string $oldmail
+   *  @param string $oldMail
    *    Stores oldmail entered by user.
-   * @param string $newmail
+   * @param string $newMail
    *    Stores newmail entered by user.
-   * @param string $number
-   *    Stores number entered by user.
-   * @param string $genre
-   *    Stores genre entered by user.
    */
-  function __construct(string $oldmail, string $newmail, string $number, string $genre) {
-    $this->oldmail = $oldmail;
-    $this->newmail = $newmail;
-    $this->number = $number;
-    $this->genre = $genre;
+  function __construct(string $oldMail, string $newMail) {
+    $this->oldMail = $oldMail;
+    $this->newMail = $newMail;
   }
 
   /**
@@ -56,30 +50,15 @@ class UpdateValidation {
    *    Returns message according to validation error.
    */
   function validateData() {
-    if (!v::notEmpty()->validate($this->oldmail)){
+    if (!v::notEmpty()->validate($this->oldMail)){
       return "Please enter old email";
     }
-    if (!v::notEmpty()->validate($this->newmail)){
+    else if (!v::notEmpty()->validate($this->newMail)){
       return "Please enter new email";
     }
-    else {
-      $mailObj = new CheckMail($this->newmail);
-      $flag = $mailObj->check();
-      if ($flag == FALSE) {
-        return "Enter a valid email id.";
-      }
-    }
-
-    if (!v::notEmpty()->validate($this->number)){
-      return "Please enter contact number";
-    }
-    else {
-      if (!v::regex('/^[0-9+]{13}+$/')->validate($this->number)) {
-        return "Enter a valid phone number.";
-      }
-    }
-    if (!v::notEmpty()->validate($this->genre)){
-      return "Please select a genre";
+    else if (v::notEmpty()->validate($this->newMail)){
+      $obj = new ValidMail($this->newMail);
+      return $obj->validMail();
     }
     return "";
   }

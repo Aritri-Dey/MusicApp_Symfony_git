@@ -5,13 +5,14 @@ namespace App\Controller;
 use App\Entity\Music;
 use App\Entity\UploadTable;
 use App\Entity\UserInfo;
-use App\Entity\CheckMail;
+use App\Services\CheckMail;
 use App\Entity\Favourite;
-use App\Entity\SendMail;
+use App\Services\SendMail;
 use App\Services\UpdateValidation;
 use App\Services\LoginValidation;
-use App\Services\RegisterValidation;
+use App\Services\NumberGenreValidation;
 use App\Services\UploadValidation;
+use App\Services\ValidMail;
 use App\Repository\MusicRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\FavouriteRepository;
@@ -143,35 +144,41 @@ class MusicController extends AbstractController {
   #[Route('/music/update',name: 'update')]
   public function update(Request $rq): Response {   
     if ($rq->get('update_btn')) {
-
       //Getting input field values through Request.
-      $femail_old = $rq->get("oldemail");
-      $femail_new = $rq->get("newemail");
-      $fnumber = $rq->get("number");
-      $fgenre = $rq->get("genre");
+      $emailOld = $rq->get("oldemail");
+      $emailNew = $rq->get("newemail");
+      $number = $rq->get("number");
+      $genre = $rq->get("genre");
 
       // Validatiing all the form fields using respect package.
       // Empty validation, syntax validation.
-      $valObj = new UpdateValidation($femail_old, $femail_new, $fnumber, $fgenre);
-      $msg = $valObj->validateData();
-      if ($msg) {
+      $valObj1 = new UpdateValidation($emailOld, $emailNew);
+      $msg1 = $valObj1->validateData();
+      $valObj2 = new NumberGenreValidation($number, $genre);
+      $msg2 = $valObj2->validateData();
+      if ($msg1) {
         return $this->render('music/update.html.twig',[
-          'msg' => $msg,
+          'msg' => $msg1,
+          ]);
+      }
+      else if ($msg2) {
+        return $this->render('music/update.html.twig',[
+          'msg' => $msg2,
           ]);
       }
 
-      //UserInfo entity is searched, if email id matches then that entire row is fetched
-      $rep = $this->userInfoTable->findOneBy(['email' => $femail_old]);
+      // UserInfo entity is searched, if email id matches then that entire row is fetched
+      $rep = $this->userInfoTable->findOneBy(['email' => $emailOld]);
       if ($rep) {
         $session = $rq->getSession();
         $logged = $session->get('loggedin');
-        //checkes if user is logged in
+        // Checkes if user is logged in
         if($logged == 1){
         
-          //setting value and saving in database
-          $rep->setEmail($femail_new); 
-          $rep->setNumber($fnumber);
-          $rep->setGenre($fgenre);
+          // Setting value and saving in database
+          $rep->setEmail($emailNew); 
+          $rep->setNumber($number);
+          $rep->setGenre($genre);
 
           $this->em->persist($rep);
           $this->em->flush();
@@ -192,17 +199,6 @@ class MusicController extends AbstractController {
   }
 
   /**
-   * Function to render the login form page.
-   * 
-   *  @return Response
-   *    Returns and renders the page containing login form.
-   */
-  #[Route('/login_page', name: 'login_page')]
-  public function log(): Response {  
-    return $this->render('music/login.html.twig');
-  }
-
-  /**
    * Function to validate information enterd by user in the login form
    * and redirect to desired route.
    * 
@@ -214,59 +210,49 @@ class MusicController extends AbstractController {
    */
   #[Route('/music/login', name: 'login')]
   public function login(Request $rq): Response {  
-    //Getting input field values through Request.
-    $fusername = $rq->get("username");
-    $femail = $rq->get("email");
-    $fpassword = $rq->get("password");
+    if ($rq->get('loginBtn')) {
+      //Getting input field values through Request.
+      $fusername = $rq->get("username");
+      $femail = $rq->get("email");
+      $fpassword = $rq->get("password");
 
-    //Form field validation.
-    $valObj = new LoginValidation($fusername , $femail, $fpassword);
-      $msg = $valObj->validateData();
-      if ($msg) {
+      //Form field validation.
+      $valObj = new LoginValidation($fusername , $femail, $fpassword);
+        $msg = $valObj->validateData();
+        if ($msg) {
+          return $this->render('music/login.html.twig',[
+            'msg' => $msg,
+            ]);
+        }
+
+      $rep = $this->userInfoTable->findOneBy(['username' => $fusername]);
+
+      if ($rep) {
+        $username = $rep->getUsername();
+        $password = $rep->getPassword();
+        $email = $rep->getEmail();
+
+        //If correct credentails are filled, user is logged in, loggedin session variable is set to 1.
+        if ($password == $fpassword && $email == $femail) {
+          $session = $rq->getSession();
+          $session->set('loggedin', '1');
+          $session->set('user',$username);
+          $loggedin = $session->get('loggedin');
+
+          return $this->render('music/music_lib.html.twig',[
+            'music' => $this->musicRepository->paginate($rq->query->getInt("page",1)),
+            'loggedin' => $loggedin,
+            ]);
+        }
         return $this->render('music/login.html.twig',[
-          'msg' => $msg,
-          ]);
-      }
-
-    $rep = $this->userInfoTable->findOneBy(['username' => $fusername]);
-
-    if ($rep) {
-      $username = $rep->getUsername();
-      $password = $rep->getPassword();
-      $email = $rep->getEmail();
-
-      //If correct credentails are filled, user is logged in, loggedin session variable is set to 1.
-      if ($password == $fpassword && $email == $femail) {
-        $session = $rq->getSession();
-        $session->set('loggedin', '1');
-        $session->set('user',$username);
-        $loggedin = $session->get('loggedin');
-
-        return $this->render('music/music_lib.html.twig',[
-          'music' => $this->musicRepository->paginate($rq->query->getInt("page",1)),
-          'loggedin' => $loggedin,
-          ]);
+          "errMessage" => "Wrong credentials"
+        ]);
       }
       return $this->render('music/login.html.twig',[
-        "errMessage" => "Wrong credentials"
+        "errMessage" => "User does not exist"
       ]);
     }
-    return $this->render('music/login.html.twig',[
-      "errMessage" => "User does not exist"
-    ]);
-  }
-
-  /**
-   * Function to render resetPassword.html.twig
-   * where user can opt to reset their password.
-   * 
-   *  @return Response
-   *    returns and redners resetpassword.html.twig whcih contains a form to submit username.
-   */
-  #[Route('/forgotpassword', name: 'forgotPassword')]
-  public function forgotPassword(): Response
-  {   
-      return $this->render('music/resetPassword.html.twig');
+    return $this->render('music/login.html.twig');
   }
 
   /**
@@ -282,7 +268,7 @@ class MusicController extends AbstractController {
   #[Route('/resetpassword', name: 'resetPassword')]
   public function resetPassword(Request $rq): Response
   {   
-    if ($rq->get('resetBtn')){
+    if ($rq->get('resetBtn')) {
       $username =$rq->get('username');
     
       $rep = $this->userInfoTable->findOneBy(['username' => $username]);
@@ -307,15 +293,6 @@ class MusicController extends AbstractController {
         ]);
     }
     return $this->render('music/resetPassword.html.twig');
-  }
-
-  /**
-   * Funtion to render reset password form, user receives this path via mail.
-   */
-  #[Route('/resetPasswordForm', name: 'resetPasswordForm')]
-  public function resetPasswordForm(): Response
-  {   
-    return $this->render('music/resetPasswordForm.html.twig');
   }
 
   /**
@@ -462,15 +439,6 @@ class MusicController extends AbstractController {
   }
 
   /**
-   * Function to render the registration form page.
-   */
-  #[Route('/register', name: 'register')]
-  public function register(): Response
-  {  
-      return $this->render('music/register.html.twig');
-  }
-
-  /**
    * Function to check and validate data entered by user in the registration form.
    * If validation is successful, the data is pushed to databse and login page is rendered.
    * 
@@ -483,36 +451,57 @@ class MusicController extends AbstractController {
   #[Route('/music/register', name: 'checkRegister')]
   public function checkRegister( Request $rq): Response
   {  
-    //Getting input field values through Request.
-    $username = $rq->get("username");
-    $email = $rq->get("email");
-    $number = $rq->get("number");
-    $password = $rq->get("password");
-    $garr = $rq->get('genre');
+    if ($rq->get('regBtn')) {
+      //Getting input field values through Request.
+      $username = $rq->get("username");
+      $email = $rq->get("email");
+      $number = $rq->get("number");
+      $password = $rq->get("password");
+      $garr = $rq->get('genre');
 
-    //Register form field validation.
-    $valObj = new RegisterValidation($username , $email, $number,$password, $garr);
-    $msg = $valObj->validateData();
-    if ($msg) {
-      return $this->render('music/register.html.twig',[
-        'msg' => $msg,
-        ]);
+      //Register form field validation.
+      $valObj1 = new NumberGenreValidation($number, $garr);
+      $msg1 = $valObj1->validateData();
+      $valObj2 = new LoginValidation($username, $email, $password);
+      $msg2 = $valObj2->validateData();
+      
+      if ($msg1) {
+        return $this->render('music/register.html.twig',[
+          'msg' => $msg1,
+          ]);
+      }
+      else if ($msg2) {
+        
+        return $this->render('music/register.html.twig',[
+          'msg' => $msg2,
+          ]);
+      }
+      else {
+        $mailValid = new ValidMail($email);
+        $mailMsg = $mailValid->validMail(); 
+        if ($mailMsg) {
+          return $this->render('music/register.html.twig',[
+            'msg' => $mailMsg,
+            ]);
+        }
+      }
+
+      //creating object of class UserInfo
+      $user = new UserInfo(); 
+      //setting value and saving in database
+      $user->setUsername($username);
+      $user->setEmail($email);
+      $user->setPassword($password);
+      $user->setNumber($number);
+      $user->setGenre($garr);
+    
+      $this->em->persist($user);
+      //executing crud operations
+      $this->em->flush(); 
+
+      return $this->render('music/login.html.twig');
     }
-
-    //creating object of class UserInfo
-    $user = new UserInfo(); 
-    //setting value and saving in database
-    $user->setUsername($username);
-    $user->setEmail($email);
-    $user->setPassword($password);
-    $user->setNumber($number);
-    $user->setGenre($garr);
-  
-    $this->em->persist($user);
-    //executing crud operations
-    $this->em->flush(); 
-
-    return $this->render('music/login.html.twig');
+    return $this->render('music/register.html.twig');
   }
 
   /**
@@ -556,28 +545,6 @@ class MusicController extends AbstractController {
   }
 
   /**
-   * Function to take user to the favourites page.
-   * If user is logged in then route is redirected to function which renders the favourit.html.twig,
-   * else login page is rendered.
-   * 
-   *  @param Request $rq
-   *    Gets information from client request through form.
-   * 
-   *  @return Response
-   *    Redirects to another function if user is logged in, else renders login page.
-   */
-  #[Route('/gotofavourite', name: 'gotofavourite')]
-  public function goToFavourite(Request $rq): Response
-  {  
-    $session = $rq->getSession();
-    $logged = $session->get('loggedin');
-    if ($logged == 1) {
-      return $this->redirectToRoute('favourite');
-    }
-    return $this->render('music/login.html.twig');
-  }
-
-  /**
    * Function to display all songs that user has marked as favourite.
    * The current user s fetched, and his/her corresponding favourite songs are 
    * fetched from the database and displayed.
@@ -588,25 +555,28 @@ class MusicController extends AbstractController {
    *  @return Response
    *    Returns and renders page with currectuser and songlist, if user does not 
    *    have any favourite song , then returns
-   *      only currentuser.
+   *    only currentuser.
    */
   #[Route('/favourite', name: 'favourite')]
-  public function favourite(Request $rq): Response
-  {  
+  public function favourite(Request $rq): Response {  
     $session = $rq->getSession();
-    $currentUser = $session->get('user');
+    $logged = $session->get('loggedin');
+    if ($logged == 1) {
+      $currentUser = $session->get('user');
 
-    $rep = $this->favTable->findBy(['user' => $currentUser]);
+      $rep = $this->favTable->findBy(['user' => $currentUser]);
 
-    if ($rep) {
+      if ($rep) {
+        return $this->render('/music/favourite.html.twig',[
+          "list" => $rep,
+          "user" => $currentUser,
+        ]); 
+      }
       return $this->render('/music/favourite.html.twig',[
-        "list" => $rep,
         "user" => $currentUser,
       ]); 
     }
-    return $this->render('/music/favourite.html.twig',[
-      "user" => $currentUser,
-    ]); 
+    return $this->render('music/login.html.twig');
   }
 
   /**

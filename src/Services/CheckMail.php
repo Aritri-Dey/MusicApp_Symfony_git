@@ -1,10 +1,12 @@
 <?php
-  namespace App\Entity;
+  namespace App\Services;
 
+  /**
+   * Class to check whether mail is valid or not using API.
+   */
   class CheckMail {
     
     /**
-     * 
      *  @var $mail -
      *    global variable
      */
@@ -29,14 +31,14 @@
      */
     function check(){
       // Set email address
-      $email_address = $this->mail;
+      $emailAddress = $this->mail;
       // Set API Access Key
       $curl = curl_init();
       curl_setopt_array($curl, array(
-      CURLOPT_URL => "https://api.apilayer.com/email_verification/check?email=$email_address",
+      CURLOPT_URL => "https://api.apilayer.com/email_verification/check?email=$emailAddress",
         CURLOPT_HTTPHEADER => array(
           "Content-Type: text/plain",
-          "apikey: HhjXroOgyyWWxQjVW8TI8R7znPzFCOsy"
+          "apikey: $_ENV['API_KEY']"
         ),
         CURLOPT_RETURNTRANSFER => TRUE,
         CURLOPT_ENCODING => "",
@@ -51,19 +53,10 @@
       curl_close($curl);
       $validationResult = json_decode($response, TRUE);
       // If validation is successful the $flag is set to TRUE, else $flag is set to FALSE.
-      if ($validationResult != NULL) {
-        if ($validationResult["smtp_check"]) {
-          $flag = TRUE;
-        } 
-        else {
-          $flag = FALSE;
-        }
-        return $flag;
+      if ($validationResult != NULL && $validationResult["smtp_check"]) {
+        return TRUE; 
       }
-      else {
-        return FALSE;
-      }
-      
+      return FALSE;
     }
   }
 ?>

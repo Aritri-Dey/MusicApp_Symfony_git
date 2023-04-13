@@ -50,10 +50,10 @@ class LoginValidation {
     if (!v::notEmpty()->validate($this->username)){
       return "Please enter username";
     }
-    if (!v::notEmpty()->validate($this->email)){
+    else if (!v::notEmpty()->validate($this->email)){
       return "Please enter email";
     }
-    if (!v::notEmpty()->validate($this->password)){
+    else if (!v::notEmpty()->validate($this->password)){
       return "Please enter a password";
     }
     return "";
