@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}Upload song{% endblock %}
 {% block button %}
-  <form action="/loggedout" method="post" class="inline-form">
+  <form action="/loggedOut" method="post" class="inline-form">
     <input type="submit" value="Logout" class="buttons">
   </form>
 {% endblock %}
@@ -12,14 +12,14 @@
     <form method="post" action="" name="upload-form" enctype="multipart/form-data" >
     <div>
         <label>Audio file</label>
-        <input type="file" name="audio-file">
+        <input type="file" name="audioFile">
         {% if audioErr is defined %}
           <p id="error">{{ audioErr }}</p>
         {% endif %}
       </div>
       <div>
         <label> Audio name</label>
-        <input type="text" name="audio-name">
+        <input type="text" name="audioName">
         {% if titleErr is defined %}
           <p id="error">{{ titleErr }}</p>
         {% endif %}
@@ -43,13 +43,13 @@
         {% endif %}
       <div>
         <label>Cover Image</label>
-        <input type="file" name="audio-img">
+        <input type="file" name="audioImg">
         {% if imgErr is defined %}
           <p id="error">{{ imgErr }}</p>
         {% endif %}
       </div>
       <div>
-        <input type="submit" value="Upload" class="buttons" id="login-btn" name="upload_btn">
+        <input type="submit" value="Upload" class="buttons" id="login-btn" name="uploadBtn">
       </div>
        <a href="/login_page" id="login-link">Login</a>
         {% if errMessage is defined %}
@@ -65,5 +65,4 @@
     {% endif %}
   </div> 
 </body> 
-
 {% endblock %}

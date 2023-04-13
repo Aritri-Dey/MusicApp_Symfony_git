@@ -49,7 +49,7 @@ class UploadValidation
    *  @param string $imgFile
    *    Stores imgFile entered by user.
    */
-  public function __construct(string $title , string $singer, string $audio, string $genre, string $img) {
+  public function __construct(string $title , string $singer, string $audio, array $genre, string $img) {
     $this->title = $title;
     $this->singer = $singer;
     $this->audioFile = $audio;

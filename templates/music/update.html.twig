@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}Update profile{% endblock %}
 {% block button %}
-  <form action="/loggedout" method="post" class="inline-form">
+  <form action="/loggedOut" method="post" class="inline-form">
     <input type="submit" value="Logout" class="buttons">
   </form>
 {% endblock %}
@@ -11,24 +11,15 @@
       <form method="post" action="/music/update" name="update-form">
         <div>
           <label for="loginName">Old Email</label>
-          <input id="loginName" type="text" name="oldemail">
-          {% if oldemailErr is defined %}
-          <p id="error">{{ oldemailErr }}</p>
-        {% endif %}
+          <input id="oldEmail" type="text" name="oldEmail">
         </div>
         <div>
           <label for="loginName">New Email</label>
-          <input id="loginName" type="text" name="newemail">
-          {% if newemailErr is defined %}
-          <p id="error">{{ newemailErr }}</p>
-        {% endif %}
+          <input id="newEmail" type="text" name="newEmail">
         </div>
         <div>
           <label for="loginName">New Contact Number</label>
-          <input id="loginName" type="text" name="number">
-          {% if phoneErr is defined %}
-          <p id="error">{{ phoneErr }}</p>
-        {% endif %}
+          <input id="number" type="text" name="number">
         </div>
         <div>
           <label for="loginName">New Interests</label>
@@ -37,9 +28,6 @@
           <input type="checkbox" value="indie" name="genre[]">Indie
           <input type="checkbox" value="romantic" name="genre[]">Romantic
         </div>
-        {% if gErr is defined %}
-          <p id="error">{{ gErr }}</p>
-        {% endif %}
         <div>
           <input type="submit" value="Update" class="buttons" id="register-btn" name="update_btn">
         </div>

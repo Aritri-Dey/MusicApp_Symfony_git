@@ -4,21 +4,21 @@
   <div class="login">
     <form method="post" action="/music/login" name="loginform" >
       <div>
-        <label for="loginName">Username</label>
-        <input id="username" type="text" name="username">
+        <label>Username</label>
+        <input id="userName" type="text" name="userName">
         {% if nameErr is defined %}
           <p id="error">{{ nameErr }}</p>
         {% endif %}
       </div>
       <div>
-        <label for="loginName">Email</label>
+        <label>Email</label>
         <input id="loginName" type="text" name="email">
         {% if emailErr is defined %}
           <p id="error">{{ emailErr }}</p>
         {% endif %}
       </div>
       <div>
-        <label for="password">Password</label>
+        <label>Password</label>
         <input id="password" type="password" name="password">
         {% if passErr is defined %}
           <p id="error">{{ passErr }}</p>
@@ -37,6 +37,5 @@
       <p><a href="/resetpassword">Forgot your password?</a></p>
       <span>New user ? <a href="/music/register">Register now</a></span>
     </form>
-    
   </div>
 {% endblock %}

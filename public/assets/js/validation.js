@@ -14,19 +14,19 @@ function checkEmptyReg() {
   var phoneRegex = /^\+91\d{10}$/;
   var emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-  if (username == null || username == "") {
+  if (username == null || username == " ") {
     $("#err").text("Enter username");
      return false;
     }
-    if (email == null || email == "") {
+    if (email == null || email == " ") {
       $("#err").text("Enter a email id");
       return false;
     }
-  if (number == null || number == "") {
+  if (number == null || number == " ") {
     $("#err").text("Enter contact number");
     return false;
   }
-  if (password == null || password == "") {
+  if (password == null || password == " ") {
     $("#err").text("Enter a password");
     return false;
   }
@@ -56,17 +56,16 @@ function checkEmptyLogin() {
   var phoneRegex = /^\+91\d{10}$/;
   var emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-  if (username == null || username == "") {
+  if (username == null || username == " ") {
     $("#err").text("Please enter username.");
     return false;
   }
-  if (email == null || email == "") {
+  if (email == null || email == " ") {
     $("#err").text("Please enter email.");
     return false;
   }
-  if (password == null || password == "") {
+  if (password == null || password == " ") {
     $("#err").text("Please enter passowrd.");
     return false;
   }
-  
 }

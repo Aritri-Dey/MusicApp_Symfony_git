@@ -6,35 +6,17 @@
     <form method="post" action="/music/register" name="registration-form">
       <div>
         <label for="loginName">Username</label>
-        <input id="loginName" type="text" name="username" >
+        <input id="loginName" type="text" name="userName" >
         <span id="errorname"></span>
-        {% if nameErrEmpty is defined %}
-          <p id="error">{{ nameErrEmpty }}</p>
-        {% endif %}
-        {% if nameErr is defined %}
-          <p id="error">{{ nameErr }}</p>
-        {% endif %}
       </div>
       <div>
         <label for="email">Email</label>
         <input id="email" type="email" name="email" >
-        {% if emailErrEmpty is defined %}
-          <p id="error">{{ emailErrEmpty }}</p>
-        {% endif %}
-        {% if emailErr is defined %}
-          <p id="error">{{ emailErr }}</p>
-        {% endif %}
       </div>
       <div>
         <label for="number">Contact Number</label>
-        <input id="lnumber" type="text" name="number" >
+        <input id="number" type="text" name="number" >
         <span id="errorphone"></span>
-        {% if numErrEmpty is defined %}
-          <p id="error">{{ numErrEmpty }}</p>
-        {% endif %}
-        {% if numErr is defined %}
-          <p id="error">{{ numErr }}</p>
-        {% endif %}
       </div>
       <div>
         <label for="loginName">Interests</label>
@@ -43,16 +25,9 @@
         <input type="checkbox" value="Indie" name="genre[]">Indie
         <input type="checkbox" value="Romantic" name="genre[]">Romantic
       </div>
-       {% if gErr is defined %}
-          <p id="error">{{ gErr }}</p>
-        {% endif %}
       <div>
         <label for="password">Password</label>
         <input id="password" type="password" name="password" >
-        {% if passErr is defined %}
-          <p id="error">{{ passErr }}</p>
-        {% endif %}
-        
         {% if msg is defined %}
           <p id="error">{{ msg }}</p>
         {% endif %}

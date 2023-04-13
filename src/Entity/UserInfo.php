@@ -17,7 +17,7 @@ class UserInfo
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    private ?string $username = null;
+    private ?string $userName = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -41,12 +41,12 @@ class UserInfo
 
     public function getUsername(): ?string
     {
-        return $this->username;
+        return $this->userName;
     }
 
-    public function setUsername(string $username): self
+    public function setUsername(string $userName): self
     {
-        $this->username = $username;
+        $this->userName = $userName;
 
         return $this;
     }

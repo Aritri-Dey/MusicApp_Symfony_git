@@ -2,7 +2,7 @@
 
 {% block title %}Favourites{% endblock %}
 {% block button %}
-  <form action="/loggedout" method="post" class="inline-form">
+  <form action="/loggedOut" method="post" class="inline-form">
     <input type="submit" value="Logout" class="buttons">
   </form>
 {% endblock %}
@@ -12,7 +12,6 @@
       <div class="fav-table">
         <center>
           <table>
-          
             <tr><th>Hi {{user}}, your favourites are here!</th></tr>
             {% for eachdata in list %}
               <tr>
@@ -23,19 +22,15 @@
                   </audio>
                 </td>
                 <td>
-                  <a href="/deletefav/{{eachdata.songid}}"><img src="/assets/image/delete.webp" alt="img" height="20px"></a>
+                  <a href="/deleteFav/{{eachdata.songid}}"><img src="/assets/image/delete.webp" alt="img" height="20px"></a>
                 </td>
               </tr>
             {% endfor %}
           </table>
         </center>
        </div>
-
     {% else %}
       <center><table><tr><th>You have no favourites yet :(</th></tr></table></center>
     {% endif %}
   </body>
 {% endblock %}
-
-
-  
