@@ -63,7 +63,7 @@ class MusicController extends AbstractController
    *  @var UserInfoRepository $userInfoRepository
    *    Global variable that stores object of UserInfoRepository.
    */
-  private $userinfoRepository;
+  private $userInfoRepository;
   /**
    *  @var object $em
    *    Global variable that stores object of EntityManagerInterface class.
@@ -121,7 +121,7 @@ class MusicController extends AbstractController
     $this->musicRepository = $musicRepository;
     $this->em = $entityManager;
     $this->favouriteRepository = $favouriteRepository;
-    $this->userinfoRepository = $userInfoRepository; 
+    $this->userInfoRepository = $userInfoRepository; 
     $this->userInfoTable = $this->em->getRepository(UserInfo::class);
     $this->musicTable = $this->em->getRepository(Music::class);
     $this->favTable = $this->em->getRepository(Favourite::class);
@@ -190,9 +190,8 @@ class MusicController extends AbstractController
       $rep = $this->userInfoTable->findOneBy(['email' => $emailOld]);
       if ($rep) {
         $session = $rq->getSession();
-        $logged = $session->get('loggedin');
         // Checks if user is logged in.
-        if($logged) {
+        if($session->get('loggedin')) {
         
           // Setting value and saving in database.
           $rep->setEmail($emailNew); 
@@ -231,12 +230,12 @@ class MusicController extends AbstractController
   public function login(Request $rq): Response {  
     if ($rq->get('loginBtn')) {
       // Getting input field values through Request.
-      $fusername = $rq->get("username");
-      $femail = $rq->get("email");
-      $fpassword = $rq->get("password");
+      $userNameForm = $rq->get("username");
+      $emailForm = $rq->get("email");
+      $passwordForm = $rq->get("password");
 
       // Form field validation.
-      $valObj = new LoginValidation($fusername , $femail, $fpassword);
+      $valObj = new LoginValidation($userNameForm , $emailForm, $passwordForm);
         $msg = $valObj->validateData();
         if ($msg) {
           return $this->render('music/login.html.twig',[
@@ -244,24 +243,23 @@ class MusicController extends AbstractController
             ]);
         }
 
-      $rep = $this->userInfoTable->findOneBy(['username' => $fusername]);
+      $rep = $this->userInfoTable->findOneBy(['username' => $userNameForm]);
 
       if ($rep) {
-        $username = $rep->getUsername();
+        $userName = $rep->getUsername();
         $password = $rep->getPassword();
         $email = $rep->getEmail();
 
         // If correct credentails are filled, user is logged in, loggedin session 
         // variable is set to 1.
-        if ($password == $fpassword && $email == $femail) {
+        if ($password == $passwordForm && $email == $emailForm) {
           $session = $rq->getSession();
           $session->set('loggedin', '1');
-          $session->set('user',$username);
-          $loggedin = $session->get('loggedin');
+          $session->set('user',$userName);
 
           return $this->render('music/music_lib.html.twig',[
             'music' => $this->musicRepository->paginate($rq->query->getInt("page",1)),
-            'loggedin' => $loggedin,
+            'loggedin' => '1',
             ]);
         }
         return $this->render('music/login.html.twig',[
@@ -288,9 +286,9 @@ class MusicController extends AbstractController
   #[Route('/resetpassword', name: 'resetPassword')]
   public function resetPassword(Request $rq): Response {   
     if ($rq->get('resetBtn')) {
-      $username =$rq->get('username');
+      $userName =$rq->get('username');
     
-      $rep = $this->userInfoTable->findOneBy(['username' => $username]);
+      $rep = $this->userInfoTable->findOneBy(['username' => $userName]);
 
       if ($rep) {
         $email = $rep->getEmail();
@@ -330,15 +328,15 @@ class MusicController extends AbstractController
   public function newPassword(Request $rq): Response {   
     if ($rq->get('submitBtn')) {
       // Getting input field values through Request.
-      $username = $rq->get("username");
+      $userName = $rq->get("username");
       $pass = $rq->get("password");
-      $con_pass = $rq->get("conpassword");
+      $conPass = $rq->get("conpassword");
 
       // UserInfo class is fetched to update password in database
-      $rep = $this->userInfoTable->findOneBy(['username' => $username]);
+      $rep = $this->userInfoTable->findOneBy(['username' => $userName]);
 
       if ($rep) {
-        if($pass == $con_pass) {
+        if($pass == $conPass) {
           $rep->setPassword($pass);
 
           $this->em->persist($rep);
@@ -430,8 +428,7 @@ class MusicController extends AbstractController
   #[Route('/mysongs', name: 'mysongs')]
   public function mySongs(Request $rq) :Response {
     $session = $rq->getSession();
-    $logged = $session->get('loggedin');
-    if ($logged) {
+    if ($session->get('loggedin')) {
       $music = $this->uploadTable->findAll();
       return $this->render('music/mysong.html.twig',[
       'music' => $music,
@@ -477,16 +474,16 @@ class MusicController extends AbstractController
   public function checkRegister( Request $rq): Response {  
     if ($rq->get('regBtn')) {
       // Getting input field values through Request.
-      $username = $rq->get("username");
+      $userName = $rq->get("username");
       $email = $rq->get("email");
       $number = $rq->get("number");
       $password = $rq->get("password");
-      $garr = $rq->get('genre');
+      $genre = $rq->get('genre');
 
       // Register form field validation.
-      $valObj1 = new NumberGenreValidation($number, $garr);
+      $valObj1 = new NumberGenreValidation($number, $genre);
       $msg1 = $valObj1->validateData();
-      $valObj2 = new LoginValidation($username, $email, $password);
+      $valObj2 = new LoginValidation($userName, $email, $password);
       $msg2 = $valObj2->validateData();
       
       if ($msg1) {
@@ -511,11 +508,11 @@ class MusicController extends AbstractController
       }
 
       // Setting value and saving in database.
-      $this->user->setUsername($username);
+      $this->user->setUsername($userName);
       $this->user->setEmail($email);
       $this->user->setPassword($password);
       $this->user->setNumber($number);
-      $this->user->setGenre($garr);
+      $this->user->setGenre($genre);
     
       $this->em->persist($this->user);
       // Executing crud operations.
@@ -544,7 +541,7 @@ class MusicController extends AbstractController
     $rep = $this->musicRepository->findOneBy(['uid' => $id]);
 
     $songId = $rep->getId();
-    $songname= $rep->getTitle();
+    $songName= $rep->getTitle();
     $path = $rep->getSongPath();
 
     $session = $rq->getSession();
@@ -558,7 +555,7 @@ class MusicController extends AbstractController
     $this->fav->setUser($currentUser); 
     $this->fav->setSongid($songId);
     $this->fav->setPath($path);
-    $this->fav->setSongname($songname);
+    $this->fav->setSongname($songName);
 
     $this->em->persist($this->fav);
     // Executing crud operations.
@@ -581,8 +578,7 @@ class MusicController extends AbstractController
   #[Route('/favourite', name: 'favourite')]
   public function favourite(Request $rq): Response {  
     $session = $rq->getSession();
-    $logged = $session->get('loggedin');
-    if ($logged) {
+    if ($session->get('loggedin')) {
       $currentUser = $session->get('user');
 
       $rep = $this->favTable->findBy(['user' => $currentUser]);
@@ -641,8 +637,7 @@ class MusicController extends AbstractController
 
     if ($rq->get('upload_btn')) {
       $session = $rq->getSession();
-      $logged = $session->get('loggedin');
-      if ($logged) {
+      if ($session->get('loggedin')) {
       
         // Getting input field values through Request.
         $title = $rq->get("audio-name");
@@ -714,9 +709,9 @@ class MusicController extends AbstractController
   public function show($id, Request $rq): Response {   
     $music = $this->musicTable->find($id);
     $session = $rq->getSession();
-    $currentuser = $session->get('user');
+    $currentUser = $session->get('user');
 
-    $rep = $this->favTable->findOneBY(['user' => $currentuser, 'songid'=>$id]);
+    $rep = $this->favTable->findOneBY(['user' => $currentUser, 'songid'=>$id]);
     if ($rep) {
       return $this->render('music/show.html.twig',[
         'showmusic' => $music,
