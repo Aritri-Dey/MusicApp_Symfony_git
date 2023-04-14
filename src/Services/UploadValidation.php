@@ -44,9 +44,9 @@ class UploadValidation
    *    Stores singer entered by user.
    *  @param string $audioFile
    *    Stores audioFile entered by user.
-   *  @param string genre
+   *  @param array genre
    *    Stores genre entered by user.
-   *  @param string $imgFile
+   *  @param string $img
    *    Stores imgFile entered by user.
    */
   public function __construct(string $title , string $singer, string $audio, array $genre, string $img) {

@@ -54,10 +54,9 @@
       curl_close($curl);
       $validationResult = json_decode($response, TRUE);
       // If validation is successful the $flag is set to TRUE, else $flag is set to FALSE.
-      if ($validationResult != NULL && $validationResult["smtp_check"]) {
+      if (!$validationResult && $validationResult["smtp_check"]) {
         return TRUE; 
       }
       return FALSE;
     }
   }
-

@@ -201,7 +201,7 @@ class MusicController extends AbstractController
           ]);
       }
       // UserInfo entity is searched, if email id matches then that 
-      //entire row is fetched.
+      // entire row is fetched.
       $rep = $this->userInfoTable->findOneBy(['email' => $emailOld]);
       if ($rep) {
         $session = $rq->getSession();
@@ -244,20 +244,20 @@ class MusicController extends AbstractController
       // Getting input field values through Request.
       $userNameForm = $rq->get("userName");
       $emailForm = $rq->get("email");
-      $passwordForm = $rq->get("password");
+      $passwordForm = md5($rq->get("password"));
       // Form field validation.
       if ($this->validation->validateNameEmpty($userNameForm)) {
-        return $this->render('music/update.html.twig',[
+        return $this->render('music/login.html.twig',[
           'msg' => $this->validation->validateNameEmpty($userNameForm),
           ]);
       }
       if ($this->validation->validateEmailEmpty($emailForm)) {
-        return $this->render('music/update.html.twig',[
+        return $this->render('music/login.html.twig',[
           'msg' => $this->validation->validateEmailEmpty($emailForm),
           ]);
       }
       if ($this->validation->validatePasswordEmpty($passwordForm)) {
-        return $this->render('music/update.html.twig',[
+        return $this->render('music/login.html.twig',[
           'msg' => $this->validation->validatePasswordEmpty($passwordForm),
           ]);
       }
@@ -271,7 +271,7 @@ class MusicController extends AbstractController
         if ($password == $passwordForm && $email == $emailForm) {
           $session = $rq->getSession();
           $session->set('loggedin', '1');
-          $session->set('user',$userName);
+          $session->set('user', $userName);
           return $this->render('music/music_lib.html.twig',[
             'music' => $this->musicRepository->paginate($rq->query->getInt("page",1)),
             'loggedin' => '1',
@@ -307,8 +307,7 @@ class MusicController extends AbstractController
         $email = $rep->getEmail();
         // Object of SendMail class is created to send mail to user. 
         $mailObj = new SendMail($email);
-        $flag = $mailObj->mailer();
-        if ($flag) {
+        if ($mailObj->mailer()) {
           return $this->render('music/resetPassword.html.twig',[
             'succmsg' => 'A mail has been sent to your registered email id.',
             ]);
@@ -347,7 +346,7 @@ class MusicController extends AbstractController
       $rep = $this->userInfoTable->findOneBy(['userName' => $userName]);
       if ($rep) {
         if($pass == $conPass) {
-          $rep->setPassword($pass);
+          $rep->setPassword(md5($pass));
           $this->em->persist($rep);
           $this->em->flush();
           return $this->render('music/resetPasswordForm.html.twig',[
@@ -371,7 +370,6 @@ class MusicController extends AbstractController
    * 
    *  @param Request
    *    Gets information from client request through form.
-   * 
    *  @param object $paginatorInterface
    *    Stores object of PaginatorInterface class, used for pagination.
    * 
@@ -485,7 +483,8 @@ class MusicController extends AbstractController
       $userName = $rq->get("userName");
       $email = $rq->get("email");
       $number = $rq->get("number");
-      $password = $rq->get("password");
+      // Getting password and encoding using md5.
+      $password = md5($rq->get("password"));
       $genre = $rq->get('genre');
       // Register form field validation.
       if ($this->validation->validateNameEmpty($userName)) {
@@ -690,12 +689,14 @@ class MusicController extends AbstractController
    * 
    *  @param int $id
    *    Stores id of the song to be displayed.
+   *  @param Request $rq
+   *    Gets information from client request through form.
    * 
    *  @return Response
    *    Returns and renders show.html.twig
    */
   #[Route('/music/{id}', methods: ['GET'] ,name: 'eachMusic')]
-  public function show($id, Request $rq): Response {   
+  public function show(int $id, Request $rq): Response {   
     $music = $this->musicTable->find($id);
     $session = $rq->getSession();
     $currentUser = $session->get('user');
