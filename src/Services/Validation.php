@@ -76,7 +76,7 @@ class Validation {
   /**
    * Function to validate genre field.
    * 
-   *  @param string $data
+   *  @param array $data
    *    Stores genre to be validated.
    * 
    *  @return string

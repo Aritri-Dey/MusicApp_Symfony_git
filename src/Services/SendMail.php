@@ -11,7 +11,6 @@
   {
 
     /**
-     * 
      *  @var $mail -
      *    global variable
      */

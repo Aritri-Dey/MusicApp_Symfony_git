@@ -371,8 +371,6 @@ class MusicController extends AbstractController
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
-   *  @param object $paginatorInterface
-   *    Stores object of PaginatorInterface class, used for pagination.
    * 
    *  @return Response
    *    Returns and renders the music libarry if logged in, else the 
@@ -396,6 +394,10 @@ class MusicController extends AbstractController
    * 
    *  @param Request $rq
    *    Gets information from client request through form. 
+   * 
+   *  @return Response
+   *    Returns and renders the music libarry if logged in, else the 
+   *    login page if user is not logged in.
    */
   #[Route('/lib2', name: 'lib2')]
   public function lib2(Request $rq) :Response {
@@ -412,6 +414,10 @@ class MusicController extends AbstractController
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
+   * 
+   *  @return Response
+   *    Returns and renders the music libarry if logged in, else the 
+   *    login page if user is not logged in.
    */
   #[Route('/lib3', name: 'lib3')]
   public function lib3(Request $rq) :Response {
@@ -438,7 +444,7 @@ class MusicController extends AbstractController
     if ($session->get('loggedin')) {
       $music = $this->uploadTable->findAll();
       return $this->render('music/mysong.html.twig',[
-      'music' => $music,
+        'music' => $music,
       ]);
     }
     return $this->render('music/login.html.twig');
@@ -701,7 +707,7 @@ class MusicController extends AbstractController
     $music = $this->musicTable->find($id);
     $session = $rq->getSession();
     $currentUser = $session->get('user');
-    $rep = $this->favTable->findOneBY(['user' => $currentUser, 'songId'=>$id]);
+    $rep = $this->favTable->findOneBY(['user' => $currentUser, 'songId' => $id]);
     if ($rep) {
       return $this->render('music/show.html.twig',[
         'showMusic' => $music,
