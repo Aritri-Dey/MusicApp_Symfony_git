@@ -205,7 +205,7 @@ class MusicController extends AbstractController
       if ($rep) {
         $session = $rq->getSession();
         // Checks if user is logged in.
-        if($session->get('loggedin')) {
+        if ($session->get('loggedin')) {
           // Setting value and saving in database.
           $rep->setEmail($emailNew); 
           $rep->setNumber($number);
@@ -250,12 +250,12 @@ class MusicController extends AbstractController
           'msg' => $this->validation->validateNameEmpty($userNameForm),
           ]);
       }
-      if ($this->validation->validateEmailEmpty($emailForm)) {
+      else if ($this->validation->validateEmailEmpty($emailForm)) {
         return $this->render('music/login.html.twig',[
           'msg' => $this->validation->validateEmailEmpty($emailForm),
           ]);
       }
-      if ($this->validation->validatePasswordEmpty($passwordForm)) {
+      else if ($this->validation->validatePasswordEmpty($passwordForm)) {
         return $this->render('music/login.html.twig',[
           'msg' => $this->validation->validatePasswordEmpty($passwordForm),
           ]);
@@ -269,12 +269,11 @@ class MusicController extends AbstractController
         // variable is set to 1.
         if ($password == $passwordForm && $email == $emailForm) {
           $session = $rq->getSession();
-          $session->set('loggedin', '1');
+          $session->set('loggedin', 1);
           $session->set('user', $userName);
-          return $this->render('music/music_lib.html.twig',[
-            'music' => $this->musicRepository->paginate($rq->query->getInt("page",1)),
-            'loggedin' => '1',
-            ]);
+          return $this->render('music/music_lib.html.twig', [
+            'music' => $this->musicRepository->paginate($rq->query->getInt("page", 1)),
+          ]);
         }
         return $this->render('music/login.html.twig',[
           "errMessage" => "Wrong credentials"
@@ -296,6 +295,9 @@ class MusicController extends AbstractController
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
+   * 
+   *  @return Response
+   *    Returns and renders page according to satisfied condition.
    */
   #[Route('/resetPassword', name: 'resetPassword')]
   public function resetPassword(Request $rq): Response {   
@@ -344,7 +346,7 @@ class MusicController extends AbstractController
       // UserInfo class is fetched to update password in database
       $rep = $this->userInfoTable->findOneBy(['userName' => $userName]);
       if ($rep) {
-        if($pass == $conPass) {
+        if ($pass == $conPass) {
           $rep->setPassword(md5($pass));
           $this->em->persist($rep);
           $this->em->flush();
@@ -456,9 +458,9 @@ class MusicController extends AbstractController
   #[Route('/loggedOut', name: 'loggedOut')]
   public function loggedOut(Request $rq): Response {  
     $session = $rq->getSession();
-    $session->set('loggedin', '0');
+    $session->set('loggedin', 0);
     return $this->render('music/logout.html.twig',[
-      'loggedin' => '0',  
+      'loggedin' => 0,  
     ]);
   }
 
