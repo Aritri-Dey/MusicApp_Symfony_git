@@ -22,6 +22,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * This class implements the main controller of the application
  * that handles all the functions related to routing.
+ * Initailaizes entity objects and calls necessary functions
+ * to validate forms, enter data in database, display user requested pages.
  */
 class MusicController extends AbstractController 
 {
@@ -173,7 +175,6 @@ class MusicController extends AbstractController
       $number = $rq->get("number");
       $genre = $rq->get("genre");
       // Validatiing all the form fields.
-      // Empty validation, syntax validation.
       if ($this->validation->validateEmailEmpty($emailOld)) {
         return $this->render('music/update.html.twig',[
           'msg' => $this->validation->validateEmailEmpty($emailOld),
@@ -199,8 +200,7 @@ class MusicController extends AbstractController
           'msg' => $this->validation->validateGenreEmpty($genre),
           ]);
       }
-      // UserInfo entity is searched, if email id matches then that 
-      // entire row is fetched.
+      // If email id matches then that entire row is fetched.
       $rep = $this->userInfoTable->findOneBy(['email' => $emailOld]);
       if ($rep) {
         $session = $rq->getSession();
@@ -444,7 +444,7 @@ class MusicController extends AbstractController
 
   /**
    * Function to logout user.
-   * When a user logs out of the applicayon, the 'loggedin' session 
+   * When a user logs out of the application, the 'loggedin' session 
    * variable is set to 0.
    * 
    *  @param Request $rq
@@ -487,32 +487,32 @@ class MusicController extends AbstractController
       $genre = $rq->get('genre');
       // Register form field validation.
       if ($this->validation->validateNameEmpty($userName)) {
-        return $this->render('music/update.html.twig',[
+        return $this->render('music/register.html.twig',[
           'msg' => $this->validation->validateNameEmpty($userName),
           ]);
       }
-      if ($this->validation->validateEmailEmpty($email)) {
-        return $this->render('music/update.html.twig',[
+      else if ($this->validation->validateEmailEmpty($email)) {
+        return $this->render('music/register.html.twig',[
           'msg' => $this->validation->validateEmailEmpty($email),
           ]);
       }
       else if ($this->validation->validEmail($email)) {
-        return $this->render('music/update.html.twig',[
+        return $this->render('music/register.html.twig',[
           'msg' => $this->validation->validEmail($email),
           ]);
       }
       else if ($this->validation->validateNumberEmpty($number)) {
-        return $this->render('music/update.html.twig',[
+        return $this->render('music/register.html.twig',[
           'msg' => $this->validation->validateNumberEmpty($number),
           ]);
       }
       else if ($this->validation->validatePasswordEmpty($password)) {
-        return $this->render('music/update.html.twig',[
+        return $this->render('music/register.html.twig',[
           'msg' => $this->validation->validatePasswordEmpty($password),
           ]);
       }
       else if ($this->validation->validateGenreEmpty($genre)) {
-        return $this->render('music/update.html.twig',[
+        return $this->render('music/register.html.twig',[
           'msg' => $this->validation->validateGenreEmpty($genre),
           ]);
       }

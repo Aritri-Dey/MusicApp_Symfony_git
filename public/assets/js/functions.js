@@ -18,7 +18,6 @@ function playBtn() {
   document.getElementById('player').play(); 
   $('#playBtn').css('display','none'); 
   $('#pauseBtn').css('display','block');
-
   document.getElementById('image').classList.add("animate");
 }
 
@@ -29,6 +28,5 @@ function pauseBtn() {
   document.getElementById('player').pause(); 
   $('#playBtn').css('display','block'); 
   $('#pauseBtn').css('display','none');
-
   document.getElementById('image').classList.remove("animate");
 }

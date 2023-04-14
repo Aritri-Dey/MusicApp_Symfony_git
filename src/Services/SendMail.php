@@ -17,7 +17,7 @@
      */
     private $mail;
 
-  /**
+    /**
      * Constructor to initialise global variable.
      * 
      *  @param string $mail-
@@ -31,10 +31,8 @@
      * Function to check for valid email id and send mail to user.
      */
     public function mailer() {
-
       // Create an instance; passing `true` enables exceptions.
       $mail = new PHPMailer(TRUE);
-
       try {
         // Server settings.
         // Enable verbose debug output.
@@ -54,7 +52,6 @@
         $mail->Subject = 'Reset Password mail';
         $mail->Body    = '<b>Hello </b>' . $this->mail. '<br> Link to reset password-<br>http://127.0.0.1:8000/newpassword';
         $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
         $mail->send();
         return TRUE;
       } 

@@ -67,16 +67,16 @@ class UploadValidation
     if (!v::notEmpty()->validate($this->title)) {
       return "Please set a title";
     }
-    if (!v::notEmpty()->validate($this->singer)) {
+    else if (!v::notEmpty()->validate($this->singer)) {
       return "Please set a singer";
     }
-    if (!v::notEmpty()->validate($this->audioFile)) {
+    else if (!v::notEmpty()->validate($this->audioFile)) {
       return "Please upload the audio";
     }
-    if (!v::notEmpty()->validate($this->genre)) {
+    else if (!v::notEmpty()->validate($this->genre)) {
       return "Please select a genre";
     }
-    if (!v::notEmpty()->validate($this->imgFile)) {
+    else if (!v::notEmpty()->validate($this->imgFile)) {
       return "Please upload a cover image";
     }
     return "";

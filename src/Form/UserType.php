@@ -16,11 +16,9 @@ class UserType extends AbstractType
             ->add('email')
             ->add('number')
             ->add('password')
-            // ->add('userid')
             ->add('interest')
         ;
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
