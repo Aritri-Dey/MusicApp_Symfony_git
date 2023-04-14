@@ -42,12 +42,12 @@ class UploadValidation
    *    Stores title entered by user.
    *  @param string $singer
    *    Stores singer entered by user.
-   *  @param string $audioFile
-   *    Stores audioFile entered by user.
+   *  @param string $audio
+   *    Stores path of audio file entered by user.
    *  @param array genre
    *    Stores genre entered by user.
    *  @param string $img
-   *    Stores imgFile entered by user.
+   *    Stores path of image file entered by user.
    */
   public function __construct(string $title , string $singer, string $audio, array $genre, string $img) {
     $this->title = $title;
@@ -82,5 +82,3 @@ class UploadValidation
     return "";
   }
 }
-
-?>

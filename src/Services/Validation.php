@@ -22,7 +22,7 @@ class Validation {
     if (!v::notEmpty()->validate($data)) {
       return "Please enter username.";
     }
-    return;
+    return "";
   }
 
   /**
@@ -38,7 +38,7 @@ class Validation {
     if (!v::notEmpty()->validate($data)) {
       return "Please enter phone number.";
     }
-    return;
+    return "";
   }
 
   /**
@@ -54,7 +54,7 @@ class Validation {
     if (!v::notEmpty()->validate($data)) {
       return "Please enter a passowrd.";
     }
-    return;
+    return "";
   }
 
   /**
@@ -70,7 +70,7 @@ class Validation {
     if (!v::notEmpty()->validate($data)) {
       return "Please enter email id.";
     }
-    return;
+    return "";
   }
 
   /**
@@ -86,7 +86,7 @@ class Validation {
     if (!v::notEmpty()->validate($data)) {
       return "Please select a genre";
     }
-    return;
+    return "";
   }
 
   /**
@@ -120,6 +120,6 @@ class Validation {
     if (!v::regex('/^[0-9+]{13}+$/')->validate($data)) {
       return "Enter a valid phone number.";
     }
-    return;
+    return "";
   }
 }

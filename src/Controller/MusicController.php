@@ -167,7 +167,6 @@ class MusicController extends AbstractController
   #[Route('/music/update',name: 'update')]
   public function update(Request $rq): Response {   
     if ($rq->get('update_btn')) {
-
       // Getting input field values through Request.
       $emailOld = $rq->get("oldEmail");
       $emailNew = $rq->get("newEmail");
@@ -309,15 +308,15 @@ class MusicController extends AbstractController
         $mailObj = new SendMail($email);
         if ($mailObj->mailer()) {
           return $this->render('music/resetPassword.html.twig',[
-            'succmsg' => 'A mail has been sent to your registered email id.',
+            'succMsg' => 'A mail has been sent to your registered email id.',
             ]);
         }
         return $this->render('music/resetPassword.html.twig',[
-          'errmsg' => 'There was a problem sending the mail.',
+          'errMsg' => 'There was a problem sending the mail.',
           ]);
       }
       return $this->render('music/resetPassword.html.twig',[
-        'errmsg' => MusicController::ACCERROR
+        'errMsg' => MusicController::ACCERROR
         ]);
     }
     return $this->render('music/resetPassword.html.twig');
@@ -368,7 +367,7 @@ class MusicController extends AbstractController
    * Function to get data from music repository and display it to user in the 
    * music library page only if logged in.
    * 
-   *  @param Request
+   *  @param Request $rq
    *    Gets information from client request through form.
    *  @param object $paginatorInterface
    *    Stores object of PaginatorInterface class, used for pagination.
@@ -393,7 +392,7 @@ class MusicController extends AbstractController
   /**
    * Function for pagination.
    * 
-   *  @param Request
+   *  @param Request $rq
    *    Gets information from client request through form. 
    */
   #[Route('/lib2', name: 'lib2')]
@@ -409,7 +408,7 @@ class MusicController extends AbstractController
   /**
    * Function for pagination.
    * 
-   *  @param Request
+   *  @param Request $rq
    *    Gets information from client request through form.
    */
   #[Route('/lib3', name: 'lib3')]
@@ -466,7 +465,7 @@ class MusicController extends AbstractController
   /**
    * Function to check and validate data entered by user in the 
    * registration form.
-   * If validation is successful, the data is pushed to databse and
+   * If validation is successful, the data is pushed to database and
    * login page is rendered.
    * 
    *  @param Request $rq
@@ -477,7 +476,7 @@ class MusicController extends AbstractController
    *    renders the login page.
    */
   #[Route('/music/register', name: 'checkRegister')]
-  public function checkRegister( Request $rq): Response {  
+  public function checkRegister(Request $rq): Response {  
     if ($rq->get('regBtn')) {
       // Getting input field values through Request.
       $userName = $rq->get("userName");
@@ -524,7 +523,6 @@ class MusicController extends AbstractController
       $this->user->setNumber($number);
       $this->user->setGenre($genre);
       $this->em->persist($this->user);
-      // Executing crud operations.
       $this->em->flush(); 
       return $this->render('music/login.html.twig');
     }
@@ -539,20 +537,22 @@ class MusicController extends AbstractController
    * 
    *  @param Request $rq
    *    Gets information from client request through form.
+   *  @param int $id
+   *    Stores id of the songto be added to favourites.
    * 
    *  @return Response
    *    Redirects to function which renders the favorite 
    *    page favourite.html.twig.
    */
   #[Route('/addToFav/{id}', name: 'addToFav')]
-  public function addToFavourite( $id, Request $rq): Response {  
+  public function addToFavourite(int $id, Request $rq): Response {  
     $rep = $this->musicRepository->findOneBy(['uid' => $id]);
     $songId = $rep->getId();
     $songName= $rep->getTitle();
     $path = $rep->getSongPath();
     $session = $rq->getSession();
     $currentUser = $session->get('user');
-    $checkExist = $this->favTable->findOneBy(['user' => $currentUser , 'songid' => $songId]);
+    $checkExist = $this->favTable->findOneBy(['user' => $currentUser , 'songId' => $songId]);
     if ($checkExist) {
       return $this->redirectToRoute('favourite');
     }
@@ -562,7 +562,6 @@ class MusicController extends AbstractController
     $this->fav->setPath($path);
     $this->fav->setSongname($songName);
     $this->em->persist($this->fav);
-    // Executing crud operations.
     $this->em->flush(); 
     return $this->redirectToRoute('favourite');
   }
@@ -613,7 +612,7 @@ class MusicController extends AbstractController
   public function deleteFav(Request $rq, int $id): Response { 
     $session = $rq->getSession();
     $currentUser = $session->get('user');
-    $rep = $this->favTable->findOneBY(['user' => $currentUser, 'songid'=>$id]);
+    $rep = $this->favTable->findOneBY(['user' => $currentUser, 'songId'=>$id]);
     $this->em->remove($rep);
     $this->em->flush();
     return $this->redirectToRoute('favourite');
@@ -646,7 +645,7 @@ class MusicController extends AbstractController
         $imgFile = $rq->files->get("audioImg");
         $newImgFileName = uniqid();
         // Validation check for fileds.
-        $valObj = new UploadValidation($title , $singer, $audioFile,$genre, $imgFile);
+        $valObj = new UploadValidation($title , $singer, $audioFile, $genre, $imgFile);
         $msg = $valObj->validateData();
         if ($msg) {
           return $this->render('music/register.html.twig',[
@@ -655,8 +654,8 @@ class MusicController extends AbstractController
         }
         try {
           $audioFile->move(
-              $this->getParameter('kernel.project_dir') . '/public/assets/upload_audio/',
-              $newAudioFileName . ".mp3"
+            $this->getParameter('kernel.project_dir') . '/public/assets/upload_audio/',
+            $newAudioFileName . ".mp3"
           );
           $imgFile->move(
             $this->getParameter('kernel.project_dir') . '/public/assets/upload_image/',
@@ -700,7 +699,7 @@ class MusicController extends AbstractController
     $music = $this->musicTable->find($id);
     $session = $rq->getSession();
     $currentUser = $session->get('user');
-    $rep = $this->favTable->findOneBY(['user' => $currentUser, 'songid'=>$id]);
+    $rep = $this->favTable->findOneBY(['user' => $currentUser, 'songId'=>$id]);
     if ($rep) {
       return $this->render('music/show.html.twig',[
         'showMusic' => $music,

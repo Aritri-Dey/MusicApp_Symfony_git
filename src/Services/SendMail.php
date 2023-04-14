@@ -39,29 +39,18 @@
         // Server settings.
         // Enable verbose debug output.
         // Send using SMTP.                  
-        $mail->isSMTP();         
-        //Set the SMTP server to send through.                                  
-        $mail->Host       = 'smtp.gmail.com';            
-        // Enable SMTP authentication.     
-        $mail->SMTPAuth   = TRUE;                  
-        // SMTP username.                 
-        $mail->Username   = $_ENV['MY_MAIL'];             
-        // SMTP password.        
-        $mail->Password   = $_ENV['MAIL_PASSWORD'];   
-        // Enable implicit TLS encryption.                         
+        $mail->isSMTP();                                         
+        $mail->Host       = 'smtp.gmail.com';                 
+        $mail->SMTPAuth   = TRUE;                                  
+        $mail->Username   = $_ENV['MY_MAIL'];                 
+        $mail->Password   = $_ENV['MAIL_PASSWORD'];                           
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            
         $mail->SMTPSecure = 'tls';
         // TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS.
         $mail->Port       = 587;                                    
-                                          
-        // Recipients.
         $mail->setFrom('aritri.dey@innoraft.com', 'Aritri Dey');
-        // Add a recipient.
         $mail->addAddress($this->mail);     
-
-        // Content.
-        $mail->isHTML(TRUE);   
-        // Set email format to HTML.                               
+        $mail->isHTML(TRUE);                                 
         $mail->Subject = 'Reset Password mail';
         $mail->Body    = '<b>Hello </b>' . $this->mail. '<br> Link to reset password-<br>http://127.0.0.1:8000/newpassword';
         $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
@@ -74,4 +63,3 @@
       }
     }
   }
-

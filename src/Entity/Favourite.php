@@ -17,7 +17,7 @@ class Favourite
     private ?string $user = null;
 
     #[ORM\Column]
-    private ?int $songid = null;
+    private ?int $songId = null;
 
     #[ORM\Column(length: 255)]
     private ?string $songname = null;
@@ -44,12 +44,12 @@ class Favourite
 
     public function getSongid(): ?int
     {
-        return $this->songid;
+        return $this->songId;
     }
 
     public function setSongid(int $songid): self
     {
-        $this->songid = $songid;
+        $this->songId = $songid;
 
         return $this;
     }
