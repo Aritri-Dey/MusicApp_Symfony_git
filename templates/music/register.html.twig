@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% block title %}Registration page{% endblock %}
+{% block body %}
+<body class="register-body">
+  <div class="register">
+    <form method="post" action="/music/register" name="registration-form">
+      <div>
+        <label for="loginName">Username</label>
+        <input id="loginName" type="text" name="userName" >
+        <span id="errorname"></span>
+      </div>
+      <div>
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" >
+      </div>
+      <div>
+        <label for="number">Contact Number</label>
+        <input id="number" type="text" name="number" >
+        <span id="errorphone"></span>
+      </div>
+      <div>
+        <label for="loginName">Interests</label>
+        <input type="checkbox" value="Pop" name="genre[]">Pop
+        <input type="checkbox" value="Folk" name="genre[]">Folk
+        <input type="checkbox" value="Indie" name="genre[]">Indie
+        <input type="checkbox" value="Romantic" name="genre[]">Romantic
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" >
+        {% if msg is defined %}
+          <p id="error">{{ msg }}</p>
+        {% endif %}
+        <div id="err"></div>
+      </div>
+      <div>
+        <input type="submit" value="Submit" class="buttons" name="regBtn" id="register-btn" onclick="return checkValid()">
+      </div>
+    </form>  
+  </div> 
+</body>
+{% endblock %}

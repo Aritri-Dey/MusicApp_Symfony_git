@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %}Update profile{% endblock %}
+{% block button %}
+  <form action="/loggedOut" method="post" class="inline-form">
+    <input type="submit" value="Logout" class="buttons">
+  </form>
+{% endblock %}
+{% block body %}
+  <body class="update-body">
+    <div class="register">
+      <form method="post" action="/music/update" name="update-form">
+        <div>
+          <label for="loginName">Old Email</label>
+          <input id="oldEmail" type="text" name="oldEmail">
+        </div>
+        <div>
+          <label for="loginName">New Email</label>
+          <input id="newEmail" type="text" name="newEmail">
+        </div>
+        <div>
+          <label for="loginName">New Contact Number</label>
+          <input id="number" type="text" name="number">
+        </div>
+        <div>
+          <label for="loginName">New Interests</label>
+          <input type="checkbox" value="pop" name="genre[]">Pop
+          <input type="checkbox" value="folk" name="genre[]">Folk
+          <input type="checkbox" value="indie" name="genre[]">Indie
+          <input type="checkbox" value="romantic" name="genre[]">Romantic
+        </div>
+        <div>
+          <input type="submit" value="Update" class="buttons" id="register-btn" name="update_btn">
+        </div>
+        <a href="/music/login" id="login-link">Login</a>
+        {% if errMessage is defined %}
+          <p id="error">{{ errMessage }}</p>
+        {% endif %}
+      </form>  
+      {% if successMessage is defined %}
+        <p id="success">{{ successMessage }}</p>
+      {% endif %}
+      {% if msg is defined %}
+        <p id="error">{{ msg }}</p>
+      {% endif %}
+    </div> 
+  </body>
+{% endblock %}

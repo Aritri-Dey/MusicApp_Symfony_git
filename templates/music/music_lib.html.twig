@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Library{% endblock %}
+{% block button %}
+  <form action="/loggedOut" method="post" class="inline-form">
+    <input type="submit" value="Logout" class="buttons">
+  </form>
+  {# <button class="buttons"><a href="/music/logout">Logout</a></button> #}
+{% endblock %}
+{% block body %}
+  <body class="music">
+    <h1>Welcome to MyMusic</h1>
+    <div class="container">
+      <div class="music-class">
+        <div class="display-music">
+          {% for eachmusic in music %}
+            {% if eachmusic.uid%3 != 0 %}
+            
+              <div class="music-div margin-r">
+                <img src={{ eachmusic.imgPath }} alt="title">
+                <h3>{{ eachmusic.title }}</h3>
+                <h6>{{ eachmusic.subtitle }}</h6>
+                <a href="/music/{{eachmusic.id}}" class="play-button">Play</a>
+              </div>
+
+            {% else %}
+              <div class="music-div ">
+                <img src={{ eachmusic.imgPath }} alt="title">
+                <h3>{{ eachmusic.title }}</h3>
+                <h6>{{ eachmusic.subtitle }}</h6>
+                <a href="/music/{{eachmusic.id}}" class="play-button">Play</a>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="pages">
+        <a href="/library" id="pgno">1</a> 
+        <a href="/lib2" id="pgno">2</a>
+        <a href="/lib3" id="pgno">3</a>
+      </div>
+    </div>
+ 
+  </body>
+
+  
+  
+{% endblock %}
+
+  

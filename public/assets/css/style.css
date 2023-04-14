@@ -1,0 +1,438 @@
+body,html,* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#logo {
+  filter: grayscale();
+}
+.container {
+  margin: 0 auto;
+  padding: 80px 0;
+  max-width: 1440px;
+  width: 100%;
+}
+.container-fluid {
+  display: flex;
+}
+.buttons {
+  margin-right: 50px;
+  padding: 10px;
+  background: rgb(65, 64, 64);
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+a {
+  text-decoration: none;
+  color: white;
+}
+.logout-form {
+  padding: 0;
+}
+.parent {
+  position: relative;
+}
+.wrapper {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+
+.popup {
+  height: 700px;
+  width: 700px;
+  background-color: rgba(17, 15, 15, 0.7);
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 360%;
+  left: 50%;
+  box-shadow: 10px 10px 10px black;
+  display: none;
+
+}
+
+.popup-form {
+  background: none;
+  box-shadow: none;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 60px;
+  font-size: 25px;
+  /* background: rgba(1, 1, 1, 0.8); */
+  color: white;
+  border-radius: 50px;
+  /* box-shadow: 10px 10px 10px black; */
+}
+
+#close {
+  background: black;
+  padding: 10px 15px;
+  float: right;
+  color: white;
+  border: none;
+  margin: 20px;
+}
+
+/*css for music library page*/
+.music {
+  background: url("../image/cont.webp"); 
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.music h1 {
+  color: white;
+  background: rgba(62, 61, 61, 0.6);
+  text-align: center;
+  margin-top: 20px;
+}
+.pages{
+  display: flex;
+  justify-content: center;
+  margin-top: 55px;
+  gap: 25px;
+}
+#pgno {
+  border: 1px solid rgba(245, 237, 237,0.5);
+  padding: 5px 10px;
+}
+.music .display-music {
+  width: 100%;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.music .display-music .music-div img{
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.music .display-music .music-div {
+  display: flex;
+  flex-direction: column;
+  background:  rgba(56, 54, 54, 0.7);
+  align-items: center;
+  padding: 20px;
+  gap: 10px;
+  border-radius: 50px;
+  width: 32%;
+}
+.margin-r {
+  margin-right: 10px;
+}
+.music .display-music .music-div audio{
+  border: black 4px solid;
+  border-radius: 30px;
+}
+.music .display-music .music-div h3,h6{
+  background: none;
+  padding: 0;
+  margin: 0;
+  color: white;
+}
+.music ul.navbar-nav.me-auto.mb-2.mb-lg-0 {
+  display: flex;
+  gap: 20px;
+}
+.play-button {
+  text-decoration: none;
+  color: white;
+  background: rgba(16, 15, 15, 0.7);
+  padding: 10px 20px;
+  width: 100%;
+  text-align: center;
+  border-radius: 18px;
+}
+
+
+/*showmusic page*/
+.showmusic-body {
+  /* background-image: linear-gradient(rgba(45, 45, 45,0.2),rgba(0, 0, 0,1)), url("../image/gif3.gif"); */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.showmusic{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0,0, 0,0.5);
+  padding: 50px 0;
+  border-radius: 50px;
+  position: relative;
+}
+.showmusic span#fav {
+  position: absolute;
+  top: 50px;
+  right: 70px;
+  fill: white;
+}
+#pausebtn {
+  display: none;
+}
+/*toggle class for like button*/
+.liked {
+  fill: red !important; 
+}
+.showmusic h1,h4{
+  color: white;
+}
+.imagediv {
+  border-radius: 50%;
+  box-shadow: 16px 14px 20px black;
+  position: relative;
+  overflow: hidden;
+}
+
+.circle {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: 40%;
+  top: 40%;
+  background: rgba(0, 0, 0,0.5);
+  border-radius: 50%;
+}
+.showmusic #image{
+  height: 500px;
+  width: 500px;
+  object-fit: cover;
+  border-radius: 50%;
+  /* animation: rotate 10s linear infinite; */
+}
+.animate {
+  animation: rotate 10s linear infinite;
+}
+@keyframes rotate {
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(-360deg);
+  }
+}
+
+
+/*logout page*/
+.logout h1 {
+  font-size: 60px;
+  text-align: center;
+}
+.logout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  margin-top: 100px;
+}
+
+
+/*login page*/
+.login {
+  display: flex;
+  justify-content: center;
+  padding: 100px;
+  text-align: center;
+}
+.login a {
+  color: white;
+  text-decoration: none;
+}
+.login a:hover {
+  color: rgb(205, 44, 151);
+  text-decoration: underline;
+}
+#login-btn:hover {
+  text-decoration: none;
+  color: white;
+}
+#error {
+  display: block;
+  color: red;
+}
+#success {
+  display: block;
+  color: green;
+  font-size: 25px;
+}
+.login #login-btn:hover {
+  background-color: rgb(19, 138, 51);
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 60px;
+  font-size: 25px;
+  background: rgba(1, 1, 1, 0.8);
+  color: white;
+  border-radius: 50px;
+  box-shadow: 10px 10px 10px black;
+}
+label {
+  display: block;
+}
+.login span {
+  font-size: 18px;
+  padding-bottom: 0;
+}
+form .buttons {
+  margin: 0;
+}
+
+/*register page*/
+.register-body {
+  background: url('../image/regback.jpeg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.register {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 100px;
+  text-align: center;
+  align-items: center;
+  gap: 50px;
+}
+.register form {
+  background: rgba(255, 255, 255,0.1);
+}
+#errorname {
+  display:block;
+  color: red;
+}
+#register-btn{
+  background-color: rgb(5, 11, 7);
+}
+#register-btn:hover{
+  background-color: rgb(19, 138, 51);
+}
+input[type="text"],input[type="checkbox"],input[type="password"] {
+  border-radius: 10px;
+  padding: 5px;
+  background: rgba(156, 157, 157,0.5);
+}
+
+/*index page*/
+.index {
+  background: url("../image/index_back.webp");
+  color: white;
+  text-align: center;
+}
+.index h1 {
+  color: white;
+  font-size: 55px;
+  padding: 20px;
+  background: rgba(181, 174, 0.1);
+}
+.index h4 {
+  color: white;
+  margin-top: 50px;
+}
+.index button {
+  padding: 20px 30px;
+  font-size: 20px;
+  background: rgba(181, 174, 0.1);
+  margin-bottom: 40px;
+}
+#reg-btn {
+  color:  rgb(205, 44, 151);
+}
+#reg-btn:hover {
+  text-decoration: underline;
+}
+
+
+/*upload page*/
+.upload-body{
+  text-align: center;
+  /* background-color: burlywood; */
+}
+.upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.upload h1 {
+  margin-top: 25px;
+  color: rgb(116, 58, 17);
+}
+.upload-body form{
+  width: 50%;
+  /* background-color: rgba(0, 0, 0,0.6); */
+  margin-bottom: 15px;
+}
+.upload-body p {
+  margin-bottom: 100px;
+}
+input[type="file"] {
+  font-size: 20px;
+  border: 2px solid sandybrown;
+}
+.upload label {
+  color: rgb(228, 219, 219);
+}
+.upload button:hover {
+  background-color: rgb(19, 138, 51);
+}
+
+/*update page*/
+.update-body .register {
+  background-color: white;
+}
+.update-body .register form {
+  background-color: rgba(32, 31, 31,0.7);
+}
+#updatebtn:hover {
+  cursor: pointer;
+}
+.inline-form {
+  display: inline;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0 45px;
+}
+#login-link:hover {
+  text-decoration: underline;
+}
+
+/*Favorites page*/
+.fav {
+  background: url("../image/bnw1.gif");
+  /* background-position: center; */
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.fav table {
+  color: rgb(10, 10, 10);
+  margin-top: 70px; 
+  border-radius: 25px;
+  background: rgba(243, 240, 240,0.5);
+  box-shadow: 10px 10px 10px rgba(43, 42, 42, 0.7);
+}
+.fav table tr th {
+  color: rgb(26, 25, 25);
+  font-size: 25px;
+}
+.fav table tr td {
+  padding:15px;
+}
+.fav table tr th {
+  padding:15px;
+}
+.fav audio {
+  filter: invert();
+}
+

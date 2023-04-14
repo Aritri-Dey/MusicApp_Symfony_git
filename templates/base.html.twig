@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {% block stylesheets %}
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+      <link rel="stylesheet" href='/assets/css/style.css'>
+    {% endblock %}
+
+    {% block javascripts %}
+        {# {{ encore_entry_script_tags('app') }} #}
+        <script src="/assets/js/validation.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+    {% endblock %}
+
+    {% block nav %}
+      <div class="parent">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+          <div class="container logout-form">
+            <div class="container-fluid">
+              <img src="/assets/image/logo.avif" alt="logo" id="logo" width="80px" height="80px">
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/index">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/music/upload">Upload</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/favourite">Favourites</a>
+                  </li>
+                  {# {% if loggedin is defined %} 
+                    {% if loggedin == 1 %}
+                      <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" id="updatebtn">Update-profile</a>
+                      </li>
+                    {% endif %}
+                  {% endif %} #}
+                  
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" id="updatebtn">Update-profile</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/library">Library</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/mySongs">My songs</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            {% block button %}{% endblock %}
+          </div>  
+        </nav>
+        <div class="update popup">
+          <button id="close">X</button>
+          <div  name="update-form" class="popup-form">
+            <div>
+              <label for="loginName">Old Email</label>
+              <input id="loginName" type="text" name="oldemail">
+              {% if oldemailErr is defined %}
+                <p id="error">{{ oldemailErr }}</p>
+              {% endif %}
+            </div>
+            <div>
+              <label for="loginName">New Email</label>
+              <input id="loginName" type="text" name="newemail">
+              {% if newemailErr is defined %}
+                <p id="error">{{ newemailErr }}</p>
+              {% endif %}
+            </div>
+            <div>
+              <label for="loginName">New Contact Number</label>
+              <input id="loginName" type="text" name="number">
+              {% if phoneErr is defined %}
+                <p id="error">{{ phoneErr }}</p>
+              {% endif %}
+            </div>
+            <div>
+              <label for="loginName">New Interests</label>
+              <input type="checkbox" value="pop" name="genre[]">Pop
+              <input type="checkbox" value="folk" name="genre[]">Folk
+              <input type="checkbox" value="indie" name="genre[]">Indie
+              <input type="checkbox" value="romantic" name="genre[]">Romantic
+            </div>
+            {% if gErr is defined %}
+              <p id="error">{{ gErr }}</p>
+            {% endif %}
+            <div>
+              <input type="submit" value="Update" class="buttons" id="register-btn" name="update_btn" onclick="update()">
+            </div>
+            <a href="/login_page" id="login-link">Login</a>
+            {% if errMessage is defined %}
+              <p id="error">{{ errMessage }}</p>
+            {% endif %}
+          </div>  
+        </div>
+      </div>
+    {% endblock %}
+  </head>
+    
+  <body>
+    {% block body %}{% endblock %}
+  </body>
+  <script src="/assets/js/functions.js"></script>
+</html>
+
+

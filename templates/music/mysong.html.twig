@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Songs{% endblock %}
+
+{% block button %}
+  <form action="/loggedOut" method="post" class="inline-form">
+    <input type="submit" value="Logout" class="buttons">
+  </form>
+{% endblock %}
+
+{% block body %}
+  <body class="music">
+    <h1>Welcome to MyMusic</h1>
+    <div class="container">
+      <div class="music-class">
+        <div class="display-music">
+          {% for eachmusic in music %}
+            {% if eachmusic.id%3 != 0 %}
+            
+              <div class="music-div margin-r">
+                <img src="../assets/upload_image/{{eachmusic.ImagePath}}" alt="title">
+                <h3>{{ eachmusic.uploadTitle }}</h3>
+                <h6>{{ eachmusic.uploadSinger }}</h6>
+                <audio controls>
+                  <source src="../assets/upload_audio/{{ eachmusic.AudioPath }}" type="audio/mpeg">
+                </audio>
+              </div>
+
+            {% else %}
+              <div class="music-div ">
+                <img src="../assets/upload_image/{{eachmusic.ImagePath}}" alt="title">
+                <h3>{{ eachmusic.uploadTitle }}</h3>
+                <h6>{{ eachmusic.uploadSinger }}</h6>
+                <audio controls>
+                  <source src="../assets/upload_audio/{{ eachmusic.AudioPath }}" type="audio/mpeg">
+                </audio>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </body> 
+{% endblock %}
+
+  

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block title %}Login page{% endblock %}
+{% block body %}
+  <div class="login">
+    <form method="post" action="/music/login" name="loginform" >
+      <div>
+        <label>Username</label>
+        <input id="userName" type="text" name="userName">
+        {% if nameErr is defined %}
+          <p id="error">{{ nameErr }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label>Email</label>
+        <input id="loginName" type="text" name="email">
+        {% if emailErr is defined %}
+          <p id="error">{{ emailErr }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label>Password</label>
+        <input id="password" type="password" name="password">
+        {% if passErr is defined %}
+          <p id="error">{{ passErr }}</p>
+        {% endif %}
+      </div> 
+      <div>
+        <input type="submit" value="Login" class="buttons" id="login-btn" name="loginBtn" onclick="return checkValid()">
+      </div>
+      <div id="err"></div>
+      {% if errMessage is defined %}
+        <p id="error">{{ errMessage }}</p>
+      {% endif %}
+      {% if msg is defined %}
+        <p id="error">{{ msg }}</p>
+      {% endif %}
+      <p><a href="/resetpassword">Forgot your password?</a></p>
+      <span>New user ? <a href="/music/register">Register now</a></span>
+    </form>
+  </div>
+{% endblock %}
